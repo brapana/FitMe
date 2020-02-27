@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <?xml version="1.0" encoding="utf-8"?>
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -19,8 +15,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="178dp"
-            android:layout_marginTop="96dp"
+            android:layout_marginStart="167dp"
+            android:layout_marginTop="56dp"
             android:text="Welcome!" />
 
         <TextView
@@ -29,8 +25,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="124dp"
-            android:layout_marginTop="119dp"
+            android:layout_marginStart="113dp"
+            android:layout_marginTop="79dp"
             android:text="Ready to start a workout?" />
 
         <TextView
@@ -39,8 +35,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="128dp"
-            android:layout_marginTop="337dp"
+            android:layout_marginStart="131dp"
+            android:layout_marginTop="292dp"
             android:text="Duration of next work out" />
 
         <TextView
@@ -50,7 +46,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="167dp"
-            android:layout_marginTop="473dp"
+            android:layout_marginTop="395dp"
             android:text="Beginning in" />
 
         <TextView
@@ -59,8 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="177dp"
-            android:layout_marginTop="389dp"
+            android:layout_marginStart="187dp"
+            android:layout_marginTop="332dp"
             android:text="30 min" />
 
         <TextView
@@ -69,8 +65,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="175dp"
-            android:layout_marginTop="526dp"
+            android:layout_marginStart="185dp"
+            android:layout_marginTop="438dp"
             android:text="1:35:24" />
 
         <androidx.cardview.widget.CardView
@@ -79,9 +75,9 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="150dp"
-            app:cardCornerRadius="30dp"
-            app:cardBackgroundColor="#6400E5">
+            android:layout_marginTop="105dp"
+            app:cardBackgroundColor="#6400E5"
+            app:cardCornerRadius="30dp">
 
             <TextView
                 android:id="@+id/caloriesRemaining"
@@ -89,7 +85,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
-                android:font_color="#ffffff"
                 android:text="Calories Remaining"
                 android:textColor="@android:color/white" />
         </androidx.cardview.widget.CardView>
