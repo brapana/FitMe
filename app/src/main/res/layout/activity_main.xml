@@ -7,84 +7,21 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/flContainer"
+        android:layout_above="@+id/bottomNavigation"/>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="178dp"
-        android:layout_marginTop="96dp"
-        android:text="Welcome!" />
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/menu_bottom_navigation"
+        android:background="#6B2DBB"
+        app:itemIconTint="#ffffff"
+        app:itemTextColor="#ffffff"/>
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="124dp"
-        android:layout_marginTop="119dp"
-        android:text="Ready to start a workout?" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="128dp"
-        android:layout_marginTop="337dp"
-        android:text="Duration of next work out" />
-
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="167dp"
-        android:layout_marginTop="473dp"
-        android:text="Beginning in" />
-
-    <TextView
-        android:id="@+id/timeDuration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="177dp"
-        android:layout_marginTop="389dp"
-        android:text="30 min" />
-
-    <TextView
-        android:id="@+id/timeUntilNextWorkout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="175dp"
-        android:layout_marginTop="526dp"
-        android:text="1:35:24" />
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="373dp"
-        android:layout_height="165dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="150dp"
-        app:cardCornerRadius="30dp"
-        app:cardBackgroundColor="#6400E5">
-
-        <TextView
-            android:id="@+id/caloriesRemaining"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:font_color="#ffffff"
-            android:text="Calories Remaining"
-            android:textColor="@android:color/white" />
-    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

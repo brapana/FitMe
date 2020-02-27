@@ -14,6 +14,12 @@ buildscript {
     }
 }
 
+ext {
+    appCompatVersion = '1.1.0'
+    designSupportVersion = '1.1.0'
+    recyclerViewVersion = '1.0.0'
+}
+
 allprojects {
     repositories {
         google()
