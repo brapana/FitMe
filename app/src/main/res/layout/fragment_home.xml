@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="362dp"
+            android:layout_marginTop="474dp"
             android:fontFamily="@font/montserrat"
             android:text="Beginning in"
             android:textAlignment="center"
@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="291dp"
+            android:layout_marginTop="366dp"
             android:fontFamily="@font/montserrat"
             android:text="Duration of next work out"
             android:textAlignment="center"
@@ -49,13 +49,13 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/homeCardSummary"
             android:layout_width="wrap_content"
-            android:layout_height="140dp"
+            android:layout_height="157dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="35dp"
-            android:layout_marginTop="105dp"
-            android:layout_marginEnd="35dp"
+            android:layout_marginStart="37dp"
+            android:layout_marginTop="126dp"
+            android:layout_marginEnd="33dp"
             app:cardBackgroundColor="#6400E5"
             app:cardCornerRadius="30dp">
 
@@ -75,7 +75,7 @@
                 android:layout_marginStart="35dp"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/montserrat"
-                android:text="Calorie Max"
+                android:text="Calorie Goal"
                 android:textColor="@android:color/white" />
 
             <TextView
@@ -100,7 +100,7 @@
                 android:textColor="@android:color/white" />
 
             <TextView
-                android:id="@+id/calorieMax"
+                android:id="@+id/calorieGoal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="220dp"
@@ -135,7 +135,48 @@
                 android:text="1050"
                 android:textColor="@android:color/white" />
 
+            <ImageView
+                android:id="@+id/btnEditCalorieGoal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="280dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/ic_mode_edit_black_24dp"
+                android:clickable="true" />
+
         </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="115dp"
+            android:layout_height="40dp"
+            android:layout_alignTop="@+id/homeCardSummary"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="81dp"
+            android:layout_marginTop="139dp"
+            android:background="@drawable/btn_background"
+            android:fontFamily="@font/montserrat_bold"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="Start Workout"
+            android:textColor="@android:color/white"
+            android:textSize="10sp" />
+
+        <Button
+            android:id="@+id/btnAddFood"
+            android:layout_width="115dp"
+            android:layout_height="40dp"
+            android:layout_alignTop="@+id/homeCardSummary"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="139dp"
+            android:layout_marginEnd="81dp"
+            android:background="@drawable/btn_background"
+            android:fontFamily="@font/montserrat_bold"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:text="Add Food Item"
+            android:textColor="@android:color/white"
+            android:textSize="10sp" />
 
         <TextView
             android:id="@+id/textView3"
@@ -149,38 +190,6 @@
             android:textSize="18sp"
             android:fontFamily="@font/montserrat" />
 
-        <Button
-            android:id="@+id/btnStart"
-            android:layout_width="95dp"
-            android:layout_height="36dp"
-            android:layout_alignTop="@+id/homeCardSummary"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="60dp"
-            android:layout_marginTop="128dp"
-            android:background="@drawable/btn_background"
-            android:fontFamily="@font/montserrat"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:text="Start Workout"
-            android:textColor="@android:color/white"
-            android:textSize="8sp" />
-
-        <Button
-            android:id="@+id/btnAddFood"
-            android:layout_width="95dp"
-            android:layout_height="36dp"
-            android:layout_alignTop="@+id/homeCardSummary"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="128dp"
-            android:layout_marginEnd="60dp"
-            android:background="@drawable/btn_background"
-            android:fontFamily="@font/montserrat"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp"
-            android:text="Add Food Item"
-            android:textColor="@android:color/white"
-            android:textSize="8sp" />
-
         <androidx.cardview.widget.CardView
             android:layout_width="117dp"
             android:layout_height="40dp"
@@ -188,7 +197,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="130dp"
-            android:layout_marginTop="70dp"
+            android:layout_marginTop="120dp"
             android:layout_marginEnd="130dp"
             app:cardCornerRadius="30dp">
 
@@ -217,7 +226,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="120dp"
-            android:layout_marginTop="144dp"
+            android:layout_marginTop="230dp"
             android:layout_marginEnd="120dp"
             app:cardCornerRadius="30dp">
 
