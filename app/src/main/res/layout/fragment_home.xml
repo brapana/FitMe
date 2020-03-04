@@ -14,10 +14,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="52dp"
             android:layout_marginBottom="53dp"
             android:fontFamily="@font/montserrat"
             android:text="Welcome!"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="86dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Ready to start a workout?"
             android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
@@ -27,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="474dp"
+            android:layout_marginTop="504dp"
             android:fontFamily="@font/montserrat"
             android:text="Beginning in"
             android:textAlignment="center"
@@ -39,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="366dp"
+            android:layout_marginTop="395dp"
             android:fontFamily="@font/montserrat"
             android:text="Duration of next work out"
             android:textAlignment="center"
@@ -54,7 +66,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="37dp"
-            android:layout_marginTop="126dp"
+            android:layout_marginTop="161dp"
             android:layout_marginEnd="33dp"
             app:cardBackgroundColor="#6400E5"
             app:cardCornerRadius="30dp">
@@ -105,6 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="220dp"
                 android:layout_marginTop="10dp"
+                android:fontFamily="@font/montserrat_bold"
                 android:text="1800"
                 android:textColor="@android:color/white" />
 
@@ -114,6 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="220dp"
                 android:layout_marginTop="40dp"
+                android:fontFamily="@font/montserrat_bold"
                 android:text="850"
                 android:textColor="@android:color/white" />
 
@@ -123,6 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="220dp"
                 android:layout_marginTop="70dp"
+                android:fontFamily="@font/montserrat_bold"
                 android:text="150"
                 android:textColor="@android:color/white" />
 
@@ -132,6 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="220dp"
                 android:layout_marginTop="100dp"
+                android:fontFamily="@font/montserrat_bold"
                 android:text="1050"
                 android:textColor="@android:color/white" />
 
@@ -177,18 +193,6 @@
             android:text="Add Food Item"
             android:textColor="@android:color/white"
             android:textSize="10sp" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="58dp"
-            android:text="Ready to start a workout?"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:fontFamily="@font/montserrat" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="117dp"
