@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.MenuItem;
 
-import com.google.android.material.bottomnavigation.BottomNavigationMenu;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,5 +49,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         bottomNavigationMenu.setSelectedItemId(R.id.actionHome);
+    }
+
+    public void changeFragmentFromFragment(Class fragmentClass){
+        try {
+            Fragment fragment = (Fragment) fragmentClass.newInstance();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

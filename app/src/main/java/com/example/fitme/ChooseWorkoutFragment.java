@@ -14,7 +14,7 @@ import android.view.ViewGroup;
  * A simple {@link Fragment} subclass.
  */
 public class ChooseWorkoutFragment extends Fragment {
-
+    //The user will be taken to this page once they click start workout to select a workout
 
     public ChooseWorkoutFragment() {
         // Required empty public constructor
