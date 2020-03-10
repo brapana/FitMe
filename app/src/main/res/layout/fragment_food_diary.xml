@@ -11,16 +11,18 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/btnAddFoodItem"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/btn_background"
+            android:clickable="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.941"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_add_white_18dp" />
+            app:srcCompat="@drawable/ic_add_white_18dp"
+            tools:srcCompat="@drawable/ic_add_white_18dp" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView6"
@@ -110,7 +112,7 @@
 
         <TextView
             android:id="@+id/textView18"
-            android:layout_width="64dp"
+            android:layout_width="wrap_content"
             android:layout_height="27dp"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/montserrat_bold"
@@ -136,7 +138,7 @@
 
         <TextView
             android:id="@+id/textView20"
-            android:layout_width="53dp"
+            android:layout_width="wrap_content"
             android:layout_height="46dp"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/montserrat_bold"
