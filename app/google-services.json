@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "751557522527",
+    "firebase_url": "https://cs125-fitme.firebaseio.com",
+    "project_id": "cs125-fitme",
+    "storage_bucket": "cs125-fitme.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:751557522527:android:8a1a9b1d7769cace0f57ea",
+        "android_client_info": {
+          "package_name": "com.example.fitme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "751557522527-v640e5ldh6d7279b7mrqbe3a2sk1n6gd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fitme",
+            "certificate_hash": "b4b1e406f66d2ceffff7597fa6637ca07ec93ee3"
+          }
+        },
+        {
+          "client_id": "751557522527-l8abuil5rgfde3llb2rko3be5374jilh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9uDWEDoFtVH5ELqVdZh7CXdtqcgqPEGM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "751557522527-l8abuil5rgfde3llb2rko3be5374jilh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

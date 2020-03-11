@@ -115,7 +115,6 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/montserrat"
-                android:text="21"
                 android:textColor="@android:color/white"
                 android:textSize="24sp" />
         </androidx.cardview.widget.CardView>
@@ -149,7 +148,6 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/montserrat"
-                android:text="Female"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="23sp" />
@@ -179,12 +177,11 @@
 
             <TextView
                 android:id="@+id/height"
-                android:layout_width="56dp"
-                android:layout_height="31dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/montserrat"
-                android:text="5' 5&quot;"
                 android:textColor="@android:color/white"
                 android:textSize="24sp" />
         </androidx.cardview.widget.CardView>
@@ -207,7 +204,6 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/montserrat"
-                android:text="140lbs"
                 android:textColor="@android:color/white"
                 android:textSize="24sp" />
 
@@ -241,7 +237,6 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/montserrat"
-                android:text="1450cal"
                 android:textColor="@android:color/white"
                 android:textSize="24sp" />
 
