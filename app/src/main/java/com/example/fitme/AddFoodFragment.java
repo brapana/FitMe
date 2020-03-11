@@ -11,6 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 
 /**
@@ -18,6 +22,10 @@ import android.widget.Button;
  */
 public class AddFoodFragment extends Fragment {
     private Button btnSubmitFoodItem;
+    private EditText etFoodName;
+    private EditText etFoodCalories;
+    private RadioGroup rbgFoodTime;
+    private String foodTime = "";
 
     public AddFoodFragment() {
         // Required empty public constructor
@@ -35,12 +43,47 @@ public class AddFoodFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //TODO need to update menu bar when navigating from home page (update in home fragment and this fragment)
+
         btnSubmitFoodItem = getActivity().findViewById(R.id.btnSubmitFoodItem);
+        etFoodName = getActivity().findViewById(R.id.etFoodName);
+        etFoodCalories = getActivity().findViewById(R.id.etFoodCalories);
+        rbgFoodTime = getActivity().findViewById(R.id.rbgFoodTime);
+
         btnSubmitFoodItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) getActivity()).changeFragmentFromFragment(FoodDiaryFragment.class);
+                if (foodTime.equals("") || etFoodName.getText().toString().isEmpty() || etFoodCalories.getText().toString().isEmpty()){
+                    //check if all submission fields are filled and a meal time is chosen
+                    Toast.makeText(getActivity().getApplicationContext(), "Please fill in all fields! :)",
+                            Toast.LENGTH_SHORT).show();
+                }else{
+                    //TODO Brandon: add data to db
+                    String mealTime = foodTime;
+                    String foodName = etFoodName.getText().toString();
+                    int foodCalories = Integer.parseInt(etFoodCalories.getText().toString());
+                    ((MainActivity) getActivity()).changeFragmentFromFragment(FoodDiaryFragment.class);
+                }
+
             }
+        });
+
+        //Updates foodTime variable when a meal time is selected
+        rbgFoodTime.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // find which radio button is selected
+                if(checkedId == R.id.rbBreakfast) {
+                    foodTime = "Breakfast";
+                } else if(checkedId == R.id.rbLunch) {
+                    foodTime = "Lunch";
+                } else if(checkedId == R.id.rbDinner){
+                    foodTime = "Dinner";
+                } else{
+                    foodTime = "Snacks";
+                }
+            }
+
         });
     }
 }
