@@ -7,6 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +45,6 @@ public class AddFoodFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //TODO need to update menu bar when navigating from home page (update in home fragment and this fragment)
 
         btnSubmitFoodItem = getActivity().findViewById(R.id.btnSubmitFoodItem);
         etFoodName = getActivity().findViewById(R.id.etFoodName);
@@ -84,6 +86,19 @@ public class AddFoodFragment extends Fragment {
                 }
             }
 
+        });
+
+        etFoodName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus){
+                    //detects when user clicks out of the food name text box
+                    //search api and set the calories in the calorie field
+                    //user can still change the calorie field
+                    Log.i("FOODTAG", etFoodName.getText().toString()); //Logs the input so you can visually see whats happening
+                    etFoodCalories.setText(Integer.toString(etFoodName.getText().toString().length())); //setting calories to string length for now
+                }
+            }
         });
     }
 }

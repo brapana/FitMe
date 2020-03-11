@@ -12,10 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
@@ -29,6 +31,8 @@ import java.util.Map;
  */
 public class HomeFragment extends Fragment {
     private Button btnAddFood;
+    private Button btnStartWorkout;
+    private ImageView btnEditCalorieGoal;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -56,12 +60,26 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         btnAddFood = getActivity().findViewById(R.id.btnAddFood);
+        btnEditCalorieGoal = getActivity().findViewById(R.id.btnEditCalorieGoal);
+        btnStartWorkout = getActivity().findViewById(R.id.btnStart);
+
         btnAddFood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                BottomNavigationView bottomNavigationMenu;
+                bottomNavigationMenu = getActivity().findViewById(R.id.bottomNavigation);
+                bottomNavigationMenu.setSelectedItemId(R.id.actionFoodDiary);
                 ((MainActivity) getActivity()).changeFragmentFromFragment(AddFoodFragment.class);
             }
         });
+
+        btnEditCalorieGoal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
     }
     //writes some dummy data to the Firestore db under the current UUID (this should show up in profile view)
     //data structure is users->{device UUID generated in MainActivity.java}->{data}
