@@ -172,7 +172,7 @@ public class AddFoodFragment extends Fragment {
 
     //given the name of the food, fills in the calories according to edamam API
     //https://developer.edamam.com/ (fills in 0 if no calorie counts are found)
-    //returned calorie counts can be weird sometimes
+    //returned calorie counts can be weird sometimes (results seem to return calories/100g)
     public void getFoodCal(View v, String food){
 
         //convert spaces to work with URL

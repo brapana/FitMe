@@ -105,6 +105,30 @@ public class HomeFragment extends Fragment {
         user.put("weight", 150);
         user.put("name", "Johnathon Wickeston");
         user.put("daily_calorie_goal", 2000);
+
+        //calculated based on info from https://www.health.harvard.edu/diet-and-weight-loss/calories-burned-in-30-minutes-of-leisure-and-routine-activities
+        //{name of exercise}, {cal burned/min}
+        fav_exercises.put("Weight Lifting: general", 3.733333333);
+        fav_exercises.put("Aerobics: water", 4.966666667);
+        fav_exercises.put("Stretching, Yoga", 4.966666667);
+        fav_exercises.put("Calisthenics: moderate", 5.566666667);
+        fav_exercises.put("Riders: general", 6.2);
+        fav_exercises.put("Aerobics: low impact", 6.833333333);
+        fav_exercises.put("Stair Step Machine: general", 7.433333333);
+        fav_exercises.put("Teaching aerobics", 7.433333333);
+        fav_exercises.put("Weight Lifting: vigorous", 7.433333333);
+        fav_exercises.put("Aerobics, Step: low impact", 8.666666667);
+        fav_exercises.put("Aerobics: high impact", 8.666666667);
+        fav_exercises.put("Bicycling, Stationary: moderate", 8.666666667);
+        fav_exercises.put("Rowing, Stationary: moderate", 8.666666667);
+        fav_exercises.put("Calisthenics: vigorous", 9.933333333);
+        fav_exercises.put("Circuit Training: general", 9.933333333);
+        fav_exercises.put("Rowing, Stationary: vigorous", 10.53333333);
+        fav_exercises.put("Elliptical Trainer: general", 11.16666667);
+        fav_exercises.put("Ski Machine: general", 11.76666667);
+        fav_exercises.put("Aerobics, Step: high impact", 12.4);
+        fav_exercises.put("Bicycling, Stationary: vigorous", 13.03333333);
+
         user.put("fav_exercises", fav_exercises);
         user.put("food_history", food_history);
 
