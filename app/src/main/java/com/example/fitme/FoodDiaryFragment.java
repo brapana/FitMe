@@ -22,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -80,6 +81,8 @@ public class FoodDiaryFragment extends Fragment {
 
         queryFood();
 
+
+
     }
 
     @Override
@@ -115,7 +118,6 @@ public class FoodDiaryFragment extends Fragment {
         rvSnacks.setLayoutManager(layoutManagerS);
         rvSnacks.setAdapter(adapterS);
 
-        //TODO Brandon: queryFood(); where lists get populated
 
         btnAddFoodItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +125,8 @@ public class FoodDiaryFragment extends Fragment {
                 ((MainActivity) getActivity()).changeFragmentFromFragment(AddFoodFragment.class);
             }
         });
+
+        loadData(view, savedInstanceState);
     }
 
 
@@ -212,15 +216,24 @@ public class FoodDiaryFragment extends Fragment {
                             }
 
 
-                            System.out.println("Successfully loaded data for food diary from Firestore");
-                            for (ArrayList<String> item : dList){
-                                System.out.println("dinner items:");
+                            System.out.println("Successfully loaded arraylist data for food diary from Firestore");
+                            System.out.println("snack items:");
+                            for (ArrayList<String> item : sList){
                                 System.out.println(item.get(0) + " " + item.get(1) + " " + item.get(2));
                             }
+                            System.out.println("breakfast items:");
                             for (ArrayList<String> item : bList){
-                                System.out.println("breakfast items:");
                                 System.out.println(item.get(0) + " " + item.get(1) + " " + item.get(2));
                             }
+                            System.out.println("lunch items:");
+                            for (ArrayList<String> item : lList){
+                                System.out.println(item.get(0) + " " + item.get(1) + " " + item.get(2));
+                            }
+                            System.out.println("dinner items:");
+                            for (ArrayList<String> item : dList){
+                                System.out.println(item.get(0) + " " + item.get(1) + " " + item.get(2));
+                            }
+
                         }
                     }
                 })
@@ -243,6 +256,123 @@ public class FoodDiaryFragment extends Fragment {
 //
 //        adapterD.addAll(dList);
 //        adapterD.notifyDataSetChanged();
+    }
+
+    //loads data from the FireStore db into the calories consumed/calories remaining
+    public void loadData(final View view, @Nullable Bundle savedInstanceState){
+
+        final String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
+        FirebaseFirestore db = ((MainActivity)getActivity()).getFS();
+
+        db.collection("users").document(UUID).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot document) {
+                        if (document.exists()){
+
+                            Map<String,Object> data = document.getData();
+
+                            Map<String,Object> food_history = (Map<String,Object>)data.get("food_history");
+
+                            Set<String> keys = food_history.keySet();
+
+
+                            int totalCal = 0;
+
+                            //calculate the total calories of all logged food items from the current day
+                            for (String food_date_string : keys){
+
+                                SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
+
+                                Date food_date = null;
+
+                                try {
+                                    food_date = date_format.parse(food_date_string);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                                String now_string = date_format.format(Timestamp.now().toDate());
+
+                                Date now = null;
+
+                                try {
+                                    now = date_format.parse(now_string);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                                if (food_date.equals(now)){
+                                    Map<String,Object> food = (Map<String,Object>)food_history.get(food_date_string);
+
+
+                                    totalCal += (long)food.get("calories");
+                                }
+
+                            }
+
+
+                            Map<String,Object> exercise_history = (Map<String,Object>)data.get("exercise_history");
+
+                            Set<String> exercise_keys = exercise_history.keySet();
+
+                            int totalCalBurned = 0;
+
+                            //calculate the total calories of all logged food items from the current day
+                            for (String exercise_date_string : exercise_keys){
+
+                                SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
+
+                                Date exercise_date = null;
+
+                                try {
+                                    exercise_date = date_format.parse(exercise_date_string);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                                String now_string = date_format.format(Timestamp.now().toDate());
+
+                                Date now = null;
+
+                                try {
+                                    now = date_format.parse(now_string);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                                if (exercise_date.equals(now)){
+                                    Map<String, Object> exercise = (Map<String,Object>)exercise_history.get(exercise_date_string);
+
+
+                                    totalCalBurned += (long)exercise.get("calories_burned");
+                                }
+
+                            }
+
+                            //update the viewable text with the values from FireBase
+
+                            long calorieGoal = (long)data.get("daily_calorie_goal");
+
+
+                            ((TextView)view.findViewById(R.id.textView16)).setText(String.format("%d cal", totalCal));
+
+
+                            long caloriesRemaining = totalCal-totalCalBurned;
+
+                            ((TextView)view.findViewById(R.id.caloriesRemaining)).setText(String.format("%d cal", caloriesRemaining));
+
+
+
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
     }
 
 
