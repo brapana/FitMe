@@ -51,7 +51,6 @@ public class AddFoodFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -76,17 +75,15 @@ public class AddFoodFragment extends Fragment {
                     Toast.makeText(getActivity().getApplicationContext(), "Please fill in all fields! :)",
                             Toast.LENGTH_SHORT).show();
                 }else{
-                    //TODO Brandon: add data to db
+
                     String mealTime = foodTime;
                     String foodName = etFoodName.getText().toString();
                     int foodCalories = Integer.parseInt(etFoodCalories.getText().toString());
 
                     writeFoodToDatabase(mealTime, foodName, foodCalories);
 
-
                     ((MainActivity) getActivity()).changeFragmentFromFragment(FoodDiaryFragment.class);
                 }
-
             }
         });
 
@@ -116,11 +113,8 @@ public class AddFoodFragment extends Fragment {
                     //detects when user clicks out of the food name text box
                     //search api and set the calories in the calorie field
                     //user can still change the calorie field
-                    //Log.i("FOODTAG", etFoodName.getText().toString()); //Logs the input so you can visually see whats happening
 
                     String food_string = etFoodName.getText().toString();
-
-                    //etFoodCalories.setText(String.valueOf(getFoodCal(food_string))); //setting calories to string length for now
 
                     getFoodCal(v, food_string);
 

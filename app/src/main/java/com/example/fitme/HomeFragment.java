@@ -1,6 +1,9 @@
 package com.example.fitme;
 
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +43,9 @@ import java.util.Set;
 public class HomeFragment extends Fragment {
     private Button btnAddFood;
     private Button btnStartWorkout;
-    private ImageView btnEditCalorieGoal;
+    private TextView etCalorieGoal;
+    private ImageView btnEditCalorieGoal;//opens popup dialog
+    private Dialog dialog;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -70,8 +76,10 @@ public class HomeFragment extends Fragment {
         loadData(view, savedInstanceState);
 
         btnAddFood = getActivity().findViewById(R.id.btnAddFood);
+        etCalorieGoal = getActivity().findViewById(R.id.calorieGoal);
         btnEditCalorieGoal = getActivity().findViewById(R.id.btnEditCalorieGoal);
         btnStartWorkout = getActivity().findViewById(R.id.btnStart);
+        dialog = new Dialog(getActivity());
 
         btnAddFood.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,8 +92,35 @@ public class HomeFragment extends Fragment {
         });
 
         btnEditCalorieGoal.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+                dialog.setContentView(R.layout.pop_up_goal);
+                final Button btnCancel = dialog.findViewById(R.id.btnCancel);
+                final Button btnSubmitNewGoal = dialog.findViewById(R.id.btnSubmitNewGoal);
+                final EditText etNewCalorieGoal = dialog.findViewById(R.id.etNewCalorieGoal);
+
+                btnSubmitNewGoal.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (etNewCalorieGoal.getText().toString().equals("") || Integer.parseInt(etNewCalorieGoal.getText().toString()) == 0){
+                            Toast.makeText(getActivity().getApplicationContext(), "Calorie goal cannot be empty or 0! :)", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        //TODO Brandon: update calorie goal, calories remaining etc. when user changes goal
+                        etCalorieGoal.setText(etNewCalorieGoal.getText().toString());
+                        dialog.dismiss();
+                    }
+                });
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
 
             }
         });
