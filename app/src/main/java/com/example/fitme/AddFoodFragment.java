@@ -16,11 +16,18 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -109,8 +116,14 @@ public class AddFoodFragment extends Fragment {
                     //detects when user clicks out of the food name text box
                     //search api and set the calories in the calorie field
                     //user can still change the calorie field
-                    Log.i("FOODTAG", etFoodName.getText().toString()); //Logs the input so you can visually see whats happening
-                    etFoodCalories.setText(Integer.toString(etFoodName.getText().toString().length())); //setting calories to string length for now
+                    //Log.i("FOODTAG", etFoodName.getText().toString()); //Logs the input so you can visually see whats happening
+
+                    String food_string = etFoodName.getText().toString();
+
+                    //etFoodCalories.setText(String.valueOf(getFoodCal(food_string))); //setting calories to string length for now
+
+                    getFoodCal(v, food_string);
+
                 }
             }
         });
@@ -155,5 +168,59 @@ public class AddFoodFragment extends Fragment {
                         System.out.println(e);
                     }
                 });
+    }
+
+    //given the name of the food, fills in the calories according to edamam API
+    //https://developer.edamam.com/ (fills in 0 if no calorie counts are found)
+    //returned calorie counts can be weird sometimes
+    public void getFoodCal(View v, String food){
+
+        //convert spaces to work with URL
+        food = food.replace(" ", "%20");
+        String url = "https://api.edamam.com/api/food-database/parser?app_id=396d20fe&app_key=" +
+                "951e412e3df060cf1c1bd5d6208204a4&ingr="+food.toLowerCase();
+
+
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        try {
+                            int calories = ((Double)response.getJSONArray("hints").getJSONObject(0).getJSONObject("food").getJSONObject("nutrients").get("ENERC_KCAL")).intValue();
+
+                            System.out.println(calories);
+
+                            etFoodCalories.setText(String.valueOf(calories));
+
+                            Toast.makeText(getActivity().getApplicationContext(), "Calories loaded from API!",
+                                    Toast.LENGTH_SHORT).show();
+
+                        } catch (JSONException e) {
+                            System.out.println("No food/calories in API response");
+                            etFoodCalories.setText("0");
+                        }
+
+
+
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+                        System.out.println("API access failed");
+                        etFoodCalories.setText(0);
+
+                    }
+                });
+
+
+        MySingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
+
+
     }
 }

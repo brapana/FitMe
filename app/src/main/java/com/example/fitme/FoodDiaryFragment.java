@@ -47,7 +47,7 @@ public class FoodDiaryFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
 
-        get_food();
+        //get_food();
 
     }
 
@@ -63,33 +63,5 @@ public class FoodDiaryFragment extends Fragment {
         });
     }
 
-    //returned calorie counts can be weird sometimes
-    public void get_food(){
-        String url = "https://api.edamam.com/api/food-database/parser?app_id=396d20fe&app_key=" +
-                "951e412e3df060cf1c1bd5d6208204a4&ingr=burrito";
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            double calories = (double)response.getJSONArray("hints").getJSONObject(0).getJSONObject("food").getJSONObject("nutrients").get("ENERC_KCAL");
-                            System.out.println(calories);
-                        } catch (JSONException e) {
-                            System.out.println("No food/calories in API response");
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
-                        System.out.println("API access failed");
-                    }
-                });
-
-        MySingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
-
-    }
 }
