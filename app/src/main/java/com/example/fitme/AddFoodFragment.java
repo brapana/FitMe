@@ -16,6 +16,19 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,6 +73,10 @@ public class AddFoodFragment extends Fragment {
                     String mealTime = foodTime;
                     String foodName = etFoodName.getText().toString();
                     int foodCalories = Integer.parseInt(etFoodCalories.getText().toString());
+
+                    writeFoodToDatabase(mealTime, foodName, foodCalories);
+
+
                     ((MainActivity) getActivity()).changeFragmentFromFragment(FoodDiaryFragment.class);
                 }
 
@@ -97,5 +114,46 @@ public class AddFoodFragment extends Fragment {
                 }
             }
         });
+    }
+
+    public void writeFoodToDatabase(String mealTime, String foodName, int foodCalories) {
+        Map<String, Object> user = new HashMap<>();
+        Map<String, Object> food_history = new HashMap<>();
+        Map<String, Object> food_info = new HashMap<>();
+
+
+        String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
+
+        System.out.println("UUID is: " + UUID);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+        Date time = Timestamp.now().toDate();
+
+        food_info.put("food", foodName);
+        food_info.put("calories", foodCalories);
+        food_info.put("meal_time", mealTime);
+
+        food_history.put(date_format.format(time), food_info);
+
+        user.put("food_history", food_history);
+
+        //set (overwrite) document with key of the current device's UUID
+        db.collection("users").document(UUID)
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Successfully wrote meal data to database!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
     }
 }
