@@ -6,23 +6,17 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 
 //Library for API calls
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.ArrayList;
 
 
 /**
@@ -30,6 +24,19 @@ import org.json.JSONObject;
  */
 public class FoodDiaryFragment extends Fragment {
     private ImageView btnAddFoodItem;
+
+    private RecyclerView rvBreakfast;
+    private RecyclerView rvLunch;
+    private RecyclerView rvDinner;
+    private RecyclerView rvSnacks;
+    protected BreakfastAdapter adapterB;
+    protected LunchAdapter adapterL;
+    protected DinnerAdapter adapterD;
+    protected SnackAdapter adapterS;
+    protected ArrayList<ArrayList<String>> bList;
+    protected ArrayList<ArrayList<String>> lList;
+    protected ArrayList<ArrayList<String>> dList;
+    protected ArrayList<ArrayList<String>> sList;
 
     public FoodDiaryFragment() {
         // Required empty public constructor
@@ -54,13 +61,54 @@ public class FoodDiaryFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        rvBreakfast = getActivity().findViewById(R.id.rvBreakfast);
+        rvLunch = getActivity().findViewById(R.id.rvLunch);
+        rvDinner = getActivity().findViewById(R.id.rvDinner);
+        rvSnacks = getActivity().findViewById(R.id.rvSnacks);
         btnAddFoodItem = getActivity().findViewById(R.id.btnAddFoodItem);
+        bList = new ArrayList<>();
+        lList = new ArrayList<>();
+        dList = new ArrayList<>();
+        sList = new ArrayList<>();
+        adapterB = new BreakfastAdapter(getContext(), bList);
+        adapterL = new LunchAdapter(getContext(), lList);
+        adapterD = new DinnerAdapter(getContext(), dList);
+        adapterS = new SnackAdapter(getContext(), sList);
+
+        LinearLayoutManager layoutManagerB = new LinearLayoutManager(getContext());
+        rvBreakfast.setLayoutManager(layoutManagerB);
+        rvBreakfast.setAdapter(adapterB);
+
+        LinearLayoutManager layoutManagerL = new LinearLayoutManager(getContext());
+        rvLunch.setLayoutManager(layoutManagerL);
+        rvLunch.setAdapter(adapterL);
+
+        LinearLayoutManager layoutManagerD = new LinearLayoutManager(getContext());
+        rvDinner.setLayoutManager(layoutManagerD);
+        rvDinner.setAdapter(adapterD);
+
+        LinearLayoutManager layoutManagerS = new LinearLayoutManager(getContext());
+        rvSnacks.setLayoutManager(layoutManagerD);
+        rvSnacks.setAdapter(adapterS);
+
+        //TODO Brandon: queryFood(); where lists get populated
+
         btnAddFoodItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((MainActivity) getActivity()).changeFragmentFromFragment(AddFoodFragment.class);
             }
         });
+    }
+
+    private void queryFood(){
+        //TODO Brandon: set all lists: bList, lList, dList, sList (breakfast, lunch, dinner, snacks respectively) #crying :)
+        //here...
+
+        //adapterB.addAll(bList);
+        //adapter.notifyDataSetChanged()
+        //...
+
     }
 
 
