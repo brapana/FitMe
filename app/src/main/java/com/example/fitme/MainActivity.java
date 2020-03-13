@@ -7,27 +7,53 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptionsExtension;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.FitnessOptions;
+import com.google.android.gms.fitness.data.Bucket;
+import com.google.android.gms.fitness.data.DataPoint;
+import com.google.android.gms.fitness.data.DataSet;
+import com.google.android.gms.fitness.data.DataSource;
 import com.google.android.gms.fitness.data.DataType;
+import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.DataReadRequest;
+import com.google.android.gms.fitness.result.DailyTotalResult;
 import com.google.android.gms.fitness.result.DataReadResponse;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 //Firebase + extra stuff added by Brandon
 
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 
@@ -118,15 +144,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+
+    //accesses Google Fit data, prompts user for authentication and permissions
+    //if there is no current login
     private void accessGoogleFit() {
 
         //System.out.println("account email: " + account.getAccount());
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        long endTime = cal.getTimeInMillis();
-        cal.add(Calendar.YEAR, -1);
-        long startTime = cal.getTimeInMillis();
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(new Date());
+//        final long endTime = cal.getTimeInMillis();
+//        //cal.add(Calendar.YEAR, -1);
+//        long startTime = cal.getTimeInMillis() - 86400000;
+
+        long endTime = System.currentTimeMillis();
+        long startTime = endTime - 86400000;
+
+        System.out.println("times for google fit:");
+        System.out.println(startTime);
+        System.out.println(endTime);
 
 
         GoogleSignInAccount account = GoogleSignIn
@@ -143,20 +180,36 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("requested permissions");
         }
 
+        //System.out.println(account.getEmail());
+
+
+
+
+
         DataReadRequest readRequest = new DataReadRequest.Builder()
                 .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
                 .bucketByTime(1, TimeUnit.DAYS)
+                //.bucketBySession()
                 .build();
 
-        Fitness.getHistoryClient(this, account)
+
+
+
+        Task<DataReadResponse> response = Fitness.getHistoryClient(this, account)
                 .readData(readRequest)
                 .addOnSuccessListener(new OnSuccessListener<DataReadResponse>() {
                     @Override
                     public void onSuccess(DataReadResponse response) {
                         // Use response data here
                         System.out.println("got fitness data");
+                        for (Bucket bucket : response.getBuckets()) {
+                            if (bucket.getDataSet(DataType.AGGREGATE_STEP_COUNT_DELTA).getDataPoints().size() > 0)
+                                System.out.println(bucket.getDataSet(DataType.AGGREGATE_STEP_COUNT_DELTA).getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt());
 
+                        }
+
+                        //TODO: put this step count into exercise history (once per day)
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -166,6 +219,38 @@ public class MainActivity extends AppCompatActivity {
                         System.out.println(e);
                     }
                 });
+
+
+
+
+
+
+
     }
+
+
+
+//    private class VerifyDataTask extends AsyncTask<Void, Void, Void> {
+//        protected Void doInBackground(Void... params) {
+//
+//            long total = 0;
+//
+//
+//            PendingResult<DailyTotalResult> result = Fitness.HistoryApi.readDailyTotal(account,DataType.TYPE_STEP_COUNT_DELTA);
+//            DailyTotalResult totalResult = result.await(30, TimeUnit.SECONDS);
+//            if (totalResult.getStatus().isSuccess()) {
+//                DataSet totalSet = totalResult.getTotal();
+//                total = totalSet.isEmpty()
+//                        ? 0
+//                        : totalSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
+//            } else {
+//                Log.w("fit", "There was a problem getting the step count.");
+//            }
+//
+//            Log.i("fit", "Total steps: " + total);
+//
+//            return null;
+//        }
+//    }
 
 }
