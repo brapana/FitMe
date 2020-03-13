@@ -88,7 +88,7 @@ public class FoodDiaryFragment extends Fragment {
         rvDinner.setAdapter(adapterD);
 
         LinearLayoutManager layoutManagerS = new LinearLayoutManager(getContext());
-        rvSnacks.setLayoutManager(layoutManagerD);
+        rvSnacks.setLayoutManager(layoutManagerS);
         rvSnacks.setAdapter(adapterS);
 
         //TODO Brandon: queryFood(); where lists get populated
