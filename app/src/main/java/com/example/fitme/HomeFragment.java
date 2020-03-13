@@ -28,9 +28,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.SetOptions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +50,11 @@ public class HomeFragment extends Fragment {
     private ImageView btnEditCalorieGoal;//opens popup dialog
     private Dialog dialog;
 
+    //arraylist of String arraylists with the following structure:
+    // [timestamp, exercise_name, calories burned/min, min performed]
+    // arraylist sorted by timestamp descending
+    protected ArrayList<ArrayList<String>> eList = new ArrayList<ArrayList<String>>();
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -56,6 +64,15 @@ public class HomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         writeToDatabase();
+
+        //dummy data for exercise_history
+        String exercise_name = "running";
+        int calories_burned = 100;
+        int time_performed = 30;
+
+        writeExerciseToDatabase(exercise_name, calories_burned, time_performed);
+
+        queryExercises();
 
     }
 
@@ -70,7 +87,7 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         loadData(view, savedInstanceState);
@@ -80,6 +97,7 @@ public class HomeFragment extends Fragment {
         btnEditCalorieGoal = getActivity().findViewById(R.id.btnEditCalorieGoal);
         btnStartWorkout = getActivity().findViewById(R.id.btnStart);
         dialog = new Dialog(getActivity());
+        final View pass_view = view;
 
         btnAddFood.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,8 +125,11 @@ public class HomeFragment extends Fragment {
                             Toast.makeText(getActivity().getApplicationContext(), "Calorie goal cannot be empty or 0! :)", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        //TODO Brandon: update calorie goal, calories remaining etc. when user changes goal
-                        etCalorieGoal.setText(etNewCalorieGoal.getText().toString());
+
+                        //write new calorie goal to database, then refresh all values
+                        writeCalorieGoalToDatabase(Integer.parseInt(etNewCalorieGoal.getText().toString()));
+                        loadData(pass_view, savedInstanceState);
+
                         dialog.dismiss();
                     }
                 });
@@ -134,6 +155,7 @@ public class HomeFragment extends Fragment {
         final Map<String, Object> user = new HashMap<>();
         Map<String, Object> fav_exercises = new HashMap<>();
         Map<String, Object> food_history = new HashMap<>();
+        Map<String, Object> exercise_history = new HashMap<>();
         user.put("age", 21);
         user.put("gender", "male");
         user.put("height", 72);
@@ -164,7 +186,10 @@ public class HomeFragment extends Fragment {
         fav_exercises.put("Aerobics, Step: high impact", 12.4);
         fav_exercises.put("Bicycling, Stationary: vigorous", 13.03333333);
 
+
+
         user.put("fav_exercises", fav_exercises);
+        user.put("exercise_history", exercise_history);
         user.put("food_history", food_history);
 
         final String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
@@ -264,21 +289,226 @@ public class HomeFragment extends Fragment {
 
                             }
 
+
+                            Map<String,Object> exercise_history = (Map<String,Object>)data.get("exercise_history");
+
+                            Set<String> exercise_keys = exercise_history.keySet();
+
+                            int totalCalBurned = 0;
+
+                            //calculate the total calories of all logged food items from the current day
+                            for (String exercise_date_string : exercise_keys){
+
+                                SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
+
+                                Date exercise_date = null;
+
+                                try {
+                                    exercise_date = date_format.parse(exercise_date_string);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                                String now_string = date_format.format(Timestamp.now().toDate());
+
+                                Date now = null;
+
+                                try {
+                                    now = date_format.parse(now_string);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                                if (exercise_date.equals(now)){
+                                    Map<String, Object> exercise = (Map<String,Object>)exercise_history.get(exercise_date_string);
+
+
+                                    totalCalBurned += (long)exercise.get("calories_burned");
+                                }
+
+                            }
+
                             //update the viewable text with the values from FireBase
-//                            ((TextView)view.findViewById(R.id.name)).setText((String)data.get("name"));
-//
-                              ((TextView)view.findViewById(R.id.caloriesConsumed)).setText(String.format("%d cal", totalCal));
-//
-//                            ((TextView)view.findViewById(R.id.gender)).setText((String)gender);
-//
-//                            ((TextView)view.findViewById(R.id.height)).setText(String.format("%d in.", height));
-//
-//                            ((TextView)view.findViewById(R.id.weight)).setText(String.format("%d lbs.", weight));
+
+                            long calorieGoal = (long)data.get("daily_calorie_goal");
+
+                            ((TextView)view.findViewById(R.id.calorieGoal)).setText(String.format("%d cal", calorieGoal));
+
+                            ((TextView)view.findViewById(R.id.caloriesConsumed)).setText(String.format("%d cal", totalCal));
+
+                            ((TextView)view.findViewById(R.id.caloriesBurned)).setText(String.format("%d cal", totalCalBurned));
+
+                            long caloriesRemaining = totalCal-totalCalBurned;
+
+                            ((TextView)view.findViewById(R.id.caloriesRemaining)).setText(String.format("%d cal", caloriesRemaining));
 
 
-                            //System.out.println("Successfully loaded data for profile view from Firestore");
 
                         }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
+    }
+
+    //write performed exercise to database
+    //calories_burned = cal burned per min, time_performed = time in min
+    //eventually this should go in chooseworkoutfragment
+    public void writeExerciseToDatabase(String exercise_name, int calories_burned, int time_performed) {
+        Map<String, Object> user = new HashMap<>();
+        Map<String, Object> exercise_history = new HashMap<>();
+        Map<String, Object> exercise_info = new HashMap<>();
+
+
+        String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
+
+        System.out.println("UUID is: " + UUID);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+        Date time = Timestamp.now().toDate();
+
+        exercise_info.put("exercise", exercise_name);
+        exercise_info.put("calories_burned", calories_burned);
+        exercise_info.put("time_performed", time_performed);
+
+        exercise_history.put(date_format.format(time), exercise_info);
+
+        user.put("exercise_history", exercise_history);
+
+        //set (overwrite) document with key of the current device's UUID
+        db.collection("users").document(UUID)
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Successfully wrote exercise data to database!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
+    }
+
+
+    //sets arraylist of String arraylists with the following structure:
+    // [timestamp, exercise_name, calories burned/min, min performed]
+    // arraylist sorted by timestamp descending
+    //uses exercise_history Firestore document in order to populate arraylist
+    private void queryExercises(){
+
+        final String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
+        FirebaseFirestore db = ((MainActivity)getActivity()).getFS();
+
+        db.collection("users").document(UUID).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot document) {
+                        if (document.exists()){
+
+                            Map<String,Object> data = document.getData();
+
+                            Map<String, Object> exercise_history = (Map<String, Object>)data.get("exercise_history");
+
+                            Set<String> keys = exercise_history.keySet();
+
+
+                            SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+
+                            ArrayList<Date> keys_as_dates = new ArrayList<Date>();
+
+                            Date key_as_date = new Date();
+
+                            //convert list of keys to Date objects (so they can be sorted)
+                            for (String key: keys){
+                                try {
+                                    key_as_date = date_format.parse(key);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                keys_as_dates.add(key_as_date);
+                            }
+
+                            Collections.sort(keys_as_dates, Collections.reverseOrder());
+
+
+                            //arraylists of String arraylists with the following structure: [timestamp, food_name, calories]
+                            //each outer arraylist responsible for a particular type of food (meal_time)
+                            // each arraylist will be sorted by timestamp descending
+                            eList = new ArrayList<ArrayList<String>>();
+
+
+
+                            //loop over now sorted date keys and place the objects into the correct arraylist
+                            for (Date key : keys_as_dates){
+
+                                String key_string = date_format.format(key);
+
+                                Map<String, Object> exercise_info = (Map<String, Object>)exercise_history.get(key_string);
+
+                                //declaring inner array to be added
+                                ArrayList<String> exercise_item = new ArrayList<String>();
+
+                                exercise_item.add(key_string);
+                                exercise_item.add((String)exercise_info.get("exercise"));
+                                exercise_item.add(String.valueOf(exercise_info.get("calories_burned")));
+                                exercise_item.add(String.valueOf(exercise_info.get("time_performed")));
+
+                                eList.add(exercise_item);
+
+
+                            }
+
+
+                            System.out.println("Successfully loaded data to arraylist for exercise history from Firestore");
+                            System.out.println("exercise items:");
+                            for (ArrayList<String> item : eList){
+                                System.out.println(item.get(0) + " " + item.get(1) + " " + item.get(2) + " " + item.get(3));
+                            }
+
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
+
+        //TODO: adapter stuff here? @Marissa
+
+    }
+
+    //write new calorie goal to the database
+    public void writeCalorieGoalToDatabase(int calorieGoal) {
+        Map<String, Object> user = new HashMap<>();
+
+
+        String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
+
+        System.out.println("UUID is: " + UUID);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+        user.put("daily_calorie_goal", calorieGoal);
+
+        db.collection("users").document(UUID)
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Successfully wrote new calorie goal to database!");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

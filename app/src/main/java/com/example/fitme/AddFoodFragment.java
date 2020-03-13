@@ -147,7 +147,6 @@ public class AddFoodFragment extends Fragment {
 
         user.put("food_history", food_history);
 
-        //set (overwrite) document with key of the current device's UUID
         db.collection("users").document(UUID)
                 .set(user, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
