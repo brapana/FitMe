@@ -617,7 +617,7 @@ public class HomeFragment extends Fragment {
 
 
 
-                            long calories_rem = Integer.parseInt(((TextView)view.findViewById(R.id.caloriesRemaining)).getText().toString().split(" ")[0]);
+                            long calories_rem = Integer.parseInt(((TextView)view.findViewById(R.id.caloriesRemainingHome)).getText().toString().split(" ")[0]);
 
                             //find the exercise that most closely reaches the remaining calories for
                             //the given amount of minutes
