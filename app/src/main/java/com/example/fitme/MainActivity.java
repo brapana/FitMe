@@ -26,6 +26,8 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptionsExtension;
 import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.FitnessOptions;
@@ -79,13 +81,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-
         //tries to request permissions (doesnt work)
         //then calls accessGoogleFit()
         setupAccount();
-
 
         bottomNavigationMenu = findViewById(R.id.bottomNavigation);
 
@@ -157,6 +155,13 @@ public class MainActivity extends AppCompatActivity {
     //two different ways to request permissions, neither seem to work
     private void setupAccount(){
 
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        // Build a GoogleSignInClient with the options specified by gso.
+        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         GoogleSignInAccount account = GoogleSignIn.getAccountForExtension(this, fitnessOptions);
 
@@ -194,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
     //should be called by the above function
     private void accessGoogleFit() {
 
-        //System.out.println("account email: " + account.getAccount());
+        //System.out.println("account email: " + account.getAccount().toString());
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
@@ -212,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         GoogleSignInAccount account = GoogleSignIn
-                .getAccountForExtension(this, fitnessOptions);
+               .getAccountForExtension(this, fitnessOptions);
 
         Fitness.getHistoryClient(this, account)
                 .readData(readRequest)
@@ -233,7 +238,41 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 1) {
+                System.out.println("here");
+                accessGoogleFit();
+            }
+        }
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        System.out.println("Request Code: "+Integer.toString(requestCode));
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    System.out.println("here");
+                } else {
+                    System.out.println("HEEERE");
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
 
 
 
