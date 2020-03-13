@@ -26,7 +26,12 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptionsExtension;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.FitnessOptions;
 import com.google.android.gms.fitness.data.DataSet;
@@ -56,6 +61,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import static java.text.DateFormat.getDateInstance;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -80,11 +87,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-
-
-        //tries to request permissions (doesnt work)
-        //then calls accessGoogleFit()
-        setupAccount();
+        accessGoogleFit();
 
 
         bottomNavigationMenu = findViewById(R.id.bottomNavigation);
@@ -154,44 +157,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //two different ways to request permissions, neither seem to work
-    private void setupAccount(){
 
 
-        GoogleSignInAccount account = GoogleSignIn.getAccountForExtension(this, fitnessOptions);
-
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-
-            String[] string_array = {Manifest.permission.ACTIVITY_RECOGNITION};
-
-
-            ActivityCompat.requestPermissions(this,
-                    string_array,
-                    1);
-
-            System.out.println("Permission not granted");
-
-        }
-        if (!GoogleSignIn.hasPermissions(account, fitnessOptions)) {
-            GoogleSignIn.requestPermissions(
-                    this, // your activity, this may need to be getContext?
-                    1, // e.g. 1
-                    account,
-                    fitnessOptions);
-
-            System.out.println("requested permissions");
-        }
-        else{
-            accessGoogleFit();
-        }
-
-        accessGoogleFit();
-    }
-
-    //should be called by the above function
     private void accessGoogleFit() {
 
         //System.out.println("account email: " + account.getAccount());
@@ -203,16 +170,25 @@ public class MainActivity extends AppCompatActivity {
         long startTime = cal.getTimeInMillis();
 
 
+        GoogleSignInAccount account = GoogleSignIn
+                .getAccountForExtension(this, fitnessOptions);
 
+
+        if (!GoogleSignIn.hasPermissions(account, fitnessOptions)) {
+            GoogleSignIn.requestPermissions(
+                    this, // your activity, this may need to be getContext?
+                    1001, // e.g. 1
+                    account,
+                    fitnessOptions);
+
+            System.out.println("requested permissions");
+        }
 
         DataReadRequest readRequest = new DataReadRequest.Builder()
                 .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
                 .bucketByTime(1, TimeUnit.DAYS)
                 .build();
-
-        GoogleSignInAccount account = GoogleSignIn
-                .getAccountForExtension(this, fitnessOptions);
 
         Fitness.getHistoryClient(this, account)
                 .readData(readRequest)
@@ -232,7 +208,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
 
 
 
