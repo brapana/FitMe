@@ -69,7 +69,7 @@ public class ChooseWorkoutFragment extends Fragment {
         rvRecommendedWorkouts.setLayoutManager(layoutManagerB);
         rvRecommendedWorkouts.setAdapter(adapter);
 
-        //TODO Brandon: le recommended workouts
+        //TODO Brandon: le recommended workouts recommendedList
         //queryRecommendedWorkouts();
 
     }
