@@ -73,12 +73,16 @@ public class HomeFragment extends Fragment {
     private ImageView btnEditCalorieGoal;//opens popup dialog
     private Dialog dialog;
 
+    // FOR SHOWING HISTORY OF EXERCISES PERFORMED
+    // GENERATED IN queryExercises()
     //arraylist of String arraylists with the following structure:
     // [timestamp, exercise_name, calories burned/min, min performed]
     // arraylist sorted by timestamp descending
     protected ArrayList<ArrayList<String>> eList = new ArrayList<ArrayList<String>>();
 
 
+    // FOR SHOWING LIST OF RECOMMENDED EXERCISES FOR THE USER TO CHOOSE FROM
+    // GENERATED IN calcWorkouts
     //arraylist of String arraylists with each inner arraylist being [delta (lower values=better reccommendation), workout name, minutes_performed, calories burned (minutes performed * cal burned/min)]
     protected ArrayList<ArrayList<String>> rec_workouts = new ArrayList<ArrayList<String>>();
 

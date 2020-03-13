@@ -56,6 +56,9 @@ public class FoodDiaryFragment extends Fragment {
     protected DinnerAdapter adapterD;
     protected SnackAdapter adapterS;
 
+
+    //FOR SHOWING FOOD HISTORY
+    // GENERATED IN queryFood()
     //arraylists of String arraylists with the following structure: [timestamp, food_name, calories]
     //each outer arraylist responsible for a particular type of food (meal_time)
     // each arraylist will be sorted by timestamp descending
