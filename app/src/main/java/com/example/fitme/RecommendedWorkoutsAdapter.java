@@ -6,8 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -58,23 +60,34 @@ public class RecommendedWorkoutsAdapter extends RecyclerView.Adapter<Recommended
         //grab all the food item fields
         private EditText etRecommendedName;
         private TextView etCaloriesBurnedPerMinute;
+        private CardView cvRecommended;
+        private ArrayList<String> chosenWorkout;
 
         public ViewHolder(@NonNull View itemView, ChooseWorkoutFragment.ClickListener listener) {
             super(itemView);
             //set all the fields
             etRecommendedName = itemView.findViewById(R.id.etRecommendedName);
             etCaloriesBurnedPerMinute = itemView.findViewById(R.id.etCaloriesBurnedPerMinute);
+            cvRecommended = itemView.findViewById(R.id.cvRecommended);
+            cvRecommended.setOnClickListener(this);
         }
 
         public void bind(ArrayList<String> recommendedItem){
             //populate fields
             etRecommendedName.setText(recommendedItem.get(1));
             etCaloriesBurnedPerMinute.setText(recommendedItem.get(2));
+            chosenWorkout = recommendedItem;
         }
 
         @Override
         public void onClick(View v) {
+            if (v.getId() == cvRecommended.getId()){
+                //TODO Brandon: add recommended workout to workout history
+                //chosenWorkout is the workout array they chose, has the same info as each item in the recommended workouts list passed to the adapter
+                Toast.makeText(context, "You selected a workout! See your schedule to view your workout.", Toast.LENGTH_SHORT).show();
 
+                ((MainActivity) v.getContext()).changeFragmentFromFragment(HomeFragment.class);
+            }
         }
     }
 

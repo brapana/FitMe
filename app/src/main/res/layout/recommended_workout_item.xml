@@ -6,6 +6,7 @@
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cvRecommended"
         android:layout_width="383dp"
         android:layout_height="66dp"
         android:layout_marginTop="10dp"
