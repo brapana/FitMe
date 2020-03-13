@@ -20,7 +20,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="25dp"
             android:fontFamily="@font/montserrat"
-            android:text="Beginning in"
+            android:text="Beginning at"
             android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="18sp"
@@ -125,7 +125,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/caloriesConsumed"
+                    android:id="@+id/caloriesConsumedHome"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="11dp"
@@ -145,11 +145,11 @@
                     android:textColor="@android:color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/caloriesConsumed"
-                    app:layout_constraintTop_toBottomOf="@+id/caloriesConsumed" />
+                    app:layout_constraintStart_toStartOf="@+id/caloriesConsumedHome"
+                    app:layout_constraintTop_toBottomOf="@+id/caloriesConsumedHome" />
 
                 <TextView
-                    android:id="@+id/caloriesRemaining"
+                    android:id="@+id/caloriesRemainingHome"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -235,6 +235,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
+                    android:clickable="true"
                     android:fontFamily="@font/montserrat"
                     android:text="30 min"
                     android:textAlignment="center"
@@ -265,12 +266,12 @@
                 android:background="@drawable/purple_border">
 
                 <TextView
-                    android:id="@+id/timeUntilNextWorkout"
+                    android:id="@+id/nextWorkoutTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:fontFamily="@font/montserrat"
-                    android:text="1:35:24"
+                    android:text="9:45am"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"

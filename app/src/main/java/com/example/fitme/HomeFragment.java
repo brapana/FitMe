@@ -1,22 +1,15 @@
 package com.example.fitme;
 
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,41 +19,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptionsExtension;
-import com.google.android.gms.fitness.Fitness;
-import com.google.android.gms.fitness.FitnessOptions;
-import com.google.android.gms.fitness.data.DataSet;
-import com.google.android.gms.fitness.data.DataType;
-import com.google.android.gms.fitness.request.DataReadRequest;
-import com.google.android.gms.fitness.result.DataReadResponse;
-import com.google.android.gms.fitness.result.DataReadResult;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.SetOptions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -70,6 +44,7 @@ public class HomeFragment extends Fragment {
     private Button btnAddFood;
     private Button btnStartWorkout;
     private TextView etCalorieGoal;
+    private TextView etTimeDuration;
     private ImageView btnEditCalorieGoal;//opens popup dialog
     private Dialog dialog;
 
@@ -77,7 +52,6 @@ public class HomeFragment extends Fragment {
     // [timestamp, exercise_name, calories burned/min, min performed]
     // arraylist sorted by timestamp descending
     protected ArrayList<ArrayList<String>> eList = new ArrayList<ArrayList<String>>();
-
 
     //arraylist of String arraylists with each inner arralist being [delta (lower values=better reccommendation), workout name, calories burned (over x minutes)]
     protected ArrayList<ArrayList<String>> rec_workouts = new ArrayList<ArrayList<String>>();
@@ -104,18 +78,12 @@ public class HomeFragment extends Fragment {
 
         queryExercises();
 
-
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-
-
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
@@ -129,10 +97,18 @@ public class HomeFragment extends Fragment {
 
         btnAddFood = getActivity().findViewById(R.id.btnAddFood);
         etCalorieGoal = getActivity().findViewById(R.id.calorieGoal);
+        etTimeDuration = getActivity().findViewById(R.id.timeDuration);
         btnEditCalorieGoal = getActivity().findViewById(R.id.btnEditCalorieGoal);
         btnStartWorkout = getActivity().findViewById(R.id.btnStart);
         dialog = new Dialog(getActivity());
         final View pass_view = view;
+
+        btnStartWorkout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) getActivity()).changeFragmentFromFragment(ChooseWorkoutFragment.class);
+            }
+        });
 
         btnAddFood.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,9 +125,9 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dialog.setContentView(R.layout.pop_up_goal);
-                final Button btnCancel = dialog.findViewById(R.id.btnCancel);
-                final Button btnSubmitNewGoal = dialog.findViewById(R.id.btnSubmitNewGoal);
-                final EditText etNewCalorieGoal = dialog.findViewById(R.id.etNewCalorieGoal);
+                final Button btnCancel = dialog.findViewById(R.id.btnCancelDuration);
+                final Button btnSubmitNewGoal = dialog.findViewById(R.id.btnSubmitNewDuration);
+                final EditText etNewCalorieGoal = dialog.findViewById(R.id.etNewTimeDuration);
 
                 btnSubmitNewGoal.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -178,6 +154,42 @@ public class HomeFragment extends Fragment {
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
 
+            }
+        });
+
+        etTimeDuration.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.setContentView(R.layout.pop_up_duration);
+                final Button btnCancel = dialog.findViewById(R.id.btnCancelDuration);
+                final Button btnSubmitNewGoal = dialog.findViewById(R.id.btnSubmitNewDuration);
+                final EditText etNewDuration = dialog.findViewById(R.id.etNewTimeDuration);
+
+                btnSubmitNewGoal.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (etNewDuration.getText().toString().equals("") || Integer.parseInt(etNewDuration.getText().toString()) <= 0){
+                            Toast.makeText(getActivity().getApplicationContext(), "Time can't be empty or less than 0! :)", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        //TODO Brandon: update time duration in db wherever needed
+
+                        etTimeDuration.setText(etNewDuration.getText().toString()+ " min");
+                        dialog.dismiss();
+                    }
+                });
+
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
             }
         });
 
@@ -369,13 +381,13 @@ public class HomeFragment extends Fragment {
 
                             ((TextView)view.findViewById(R.id.calorieGoal)).setText(String.format("%d cal", calorieGoal));
 
-                            ((TextView)view.findViewById(R.id.caloriesConsumed)).setText(String.format("%d cal", totalCal));
+                            ((TextView)view.findViewById(R.id.caloriesConsumedHome)).setText(String.format("%d cal", totalCal));
 
                             ((TextView)view.findViewById(R.id.caloriesBurned)).setText(String.format("%d cal", totalCalBurned));
 
                             long caloriesRemaining = totalCal-totalCalBurned;
 
-                            ((TextView)view.findViewById(R.id.caloriesRemaining)).setText(String.format("%d cal", caloriesRemaining));
+                            ((TextView)view.findViewById(R.id.caloriesRemainingHome)).setText(String.format("%d cal", caloriesRemaining));
 
 
 
@@ -582,7 +594,7 @@ public class HomeFragment extends Fragment {
 
 
 
-                            long calories_rem = Integer.parseInt(((TextView)view.findViewById(R.id.caloriesRemaining)).getText().toString().split(" ")[0]);
+                            long calories_rem = Integer.parseInt(((TextView)view.findViewById(R.id.caloriesRemainingHome)).getText().toString().split(" ")[0]);
 
                             //find the exercise that most closely reaches the remaining calories for
                             //the given amount of minutes

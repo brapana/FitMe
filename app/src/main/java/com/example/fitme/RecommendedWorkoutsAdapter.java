@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class LunchAdapter extends RecyclerView.Adapter<LunchAdapter.ViewHolder> {
+public class RecommendedWorkoutsAdapter extends RecyclerView.Adapter<RecommendedWorkoutsAdapter.ViewHolder> {
     Context context;
     ArrayList<ArrayList<String>> foodList;
 
-    public LunchAdapter(Context context, ArrayList<ArrayList<String>> foods) {
+    public RecommendedWorkoutsAdapter(Context context, ArrayList<ArrayList<String>> foods) {
         this.context = context;
         this.foodList = foods;
     }
@@ -71,3 +71,4 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchAdapter.ViewHolder> 
     }
 
 }
+

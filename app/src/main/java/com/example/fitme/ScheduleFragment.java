@@ -13,18 +13,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ScheduleFragment extends Fragment {
+
+    public interface ClickListener {
+        void onPositionClicked(int position);
+    }
+
     private Button btnAddtoCalendar;
+    private ClickListener listener;
 
     public ScheduleFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,6 +43,7 @@ public class ScheduleFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         btnAddtoCalendar = getActivity().findViewById(R.id.addToCalendar);
+
         btnAddtoCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -5,6 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".FoodDiaryFragment">
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -26,8 +29,8 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView6"
-            android:layout_width="298dp"
-            android:layout_height="114dp"
+            android:layout_width="318dp"
+            android:layout_height="115dp"
             android:layout_marginTop="55dp"
             app:cardBackgroundColor="#B37AFC"
             app:cardCornerRadius="30dp"
@@ -69,7 +72,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView16"
+                    android:id="@+id/caloriesConsumedHome"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
@@ -82,7 +85,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/caloriesRemaining"
+                    android:id="@+id/caloriesRemainingHome"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -93,7 +96,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.265"
                     app:layout_constraintStart_toEndOf="@+id/textView9"
-                    app:layout_constraintTop_toBottomOf="@+id/textView16" />
+                    app:layout_constraintTop_toBottomOf="@+id/caloriesConsumedHome" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -189,4 +192,5 @@
             app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </FrameLayout>
