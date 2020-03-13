@@ -79,6 +79,9 @@ public class HomeFragment extends Fragment {
     protected ArrayList<ArrayList<String>> eList = new ArrayList<ArrayList<String>>();
 
 
+    //arraylist of String arraylists with each inner arralist being [delta (lower values=better reccommendation), workout name, calories burned (over x minutes)]
+    protected ArrayList<ArrayList<String>> rec_workouts = new ArrayList<ArrayList<String>>();
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -122,7 +125,7 @@ public class HomeFragment extends Fragment {
 
         loadData(view, savedInstanceState);
 
-        calcWorkout(view, savedInstanceState, 30);
+        calcWorkouts(view, savedInstanceState, 30);
 
         btnAddFood = getActivity().findViewById(R.id.btnAddFood);
         etCalorieGoal = getActivity().findViewById(R.id.calorieGoal);
@@ -554,11 +557,14 @@ public class HomeFragment extends Fragment {
                 });
     }
 
-    //loads data from the FireStore db into the home strings displayed in the app
-    public void calcWorkout(final View view, @Nullable Bundle savedInstanceState, final int minutes){
+    //Calculates list of recommended workouts sorted by their closeness to the remaining calories
+    public void calcWorkouts(final View view, @Nullable Bundle savedInstanceState, final int minutes){
 
         final String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
         FirebaseFirestore db = ((MainActivity)getActivity()).getFS();
+
+
+
 
         db.collection("users").document(UUID).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -573,38 +579,52 @@ public class HomeFragment extends Fragment {
                             Set<String> keys = fav_exercises.keySet();
 
 
-                            //exercise that got closest to remaining calories
-                            double lowest_delta = Double.MAX_VALUE;
-                            double delta = 0.0;
-                            String closest_key = "no fav_exercises!";
+
 
 
                             long calories_rem = Integer.parseInt(((TextView)view.findViewById(R.id.caloriesRemaining)).getText().toString().split(" ")[0]);
 
                             //find the exercise that most closely reaches the remaining calories for
                             //the given amount of minutes
+
+                            Map<Double, String> workouts = new HashMap<Double, String>();
+
                             for (String key : keys){
 
 
 
                                double calories_burned = (double)fav_exercises.get(key);
 
-                               delta = Math.abs(calories_rem-(calories_burned*minutes));
+                               double delta = Math.abs(calories_rem-(calories_burned*minutes));
 
-                               if (delta < lowest_delta){
-                                   lowest_delta = delta;
-                                   closest_key = key;
-                               }
+                               workouts.put(delta, key);
+
 
 
                             }
 
-                            double calories_burned = 0;
-                            if (!closest_key.equals(""))
-                                calories_burned = ((double)fav_exercises.get(closest_key)) * 30;
 
 
-                            System.out.println("Recommended workout: "+ closest_key +  ": " + calories_burned + "calories burned in " + minutes + "minutes");
+                            Set<Double> workouts_keys = workouts.keySet();
+
+                            ArrayList<Double> workout_keys = new ArrayList<Double>();
+
+                            for (Double key: workouts_keys){
+                                workout_keys.add(key);
+                            }
+
+                            Collections.sort(workout_keys);
+
+                            for (Double key : workout_keys){
+                                ArrayList<String> workout_item = new ArrayList<String>();
+
+                                workout_item.add(Double.toString(key));
+                                workout_item.add(workouts.get(key));
+                                //TODO: add calories burned total here
+
+                                rec_workouts.add(workout_item);
+
+                            }
 
 
 
