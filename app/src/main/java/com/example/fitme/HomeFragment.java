@@ -19,22 +19,41 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptionsExtension;
+import com.google.android.gms.fitness.Fitness;
+import com.google.android.gms.fitness.FitnessOptions;
+import com.google.android.gms.fitness.data.DataSet;
+import com.google.android.gms.fitness.data.DataType;
+import com.google.android.gms.fitness.request.DataReadRequest;
+import com.google.android.gms.fitness.result.DataReadResponse;
+import com.google.android.gms.fitness.result.DataReadResult;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.SetOptions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -48,12 +67,17 @@ public class HomeFragment extends Fragment {
     private ImageView btnEditCalorieGoal;//opens popup dialog
     private Dialog dialog;
 
+    // FOR SHOWING HISTORY OF EXERCISES PERFORMED
+    // GENERATED IN queryExercises()
     //arraylist of String arraylists with the following structure:
     // [timestamp, exercise_name, calories burned/min, min performed]
     // arraylist sorted by timestamp descending
     protected ArrayList<ArrayList<String>> eList = new ArrayList<ArrayList<String>>();
 
-    //arraylist of String arraylists with each inner arralist being [delta (lower values=better reccommendation), workout name, calories burned (over x minutes)]
+
+    // FOR SHOWING LIST OF RECOMMENDED EXERCISES FOR THE USER TO CHOOSE FROM
+    // GENERATED IN calcWorkouts
+    //arraylist of String arraylists with each inner arraylist being [delta (lower values=better reccommendation), workout name, minutes_performed, calories burned (minutes performed * cal burned/min)]
     protected ArrayList<ArrayList<String>> rec_workouts = new ArrayList<ArrayList<String>>();
 
 
@@ -570,11 +594,12 @@ public class HomeFragment extends Fragment {
     }
 
     //Calculates list of recommended workouts sorted by their closeness to the remaining calories
+    //arraylist of String arraylists with each inner arraylist being [delta (lower values=better reccommendation), workout name, minutes_performed, calories burned (minutes performed * cal burned/min)]
+    // arraylist sorted by delta ascending
     public void calcWorkouts(final View view, @Nullable Bundle savedInstanceState, final int minutes){
 
         final String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
         FirebaseFirestore db = ((MainActivity)getActivity()).getFS();
-
 
 
 
@@ -592,9 +617,7 @@ public class HomeFragment extends Fragment {
 
 
 
-
-
-                            long calories_rem = Integer.parseInt(((TextView)view.findViewById(R.id.caloriesRemainingHome)).getText().toString().split(" ")[0]);
+                            long calories_rem = Integer.parseInt(((TextView)view.findViewById(R.id.caloriesRemaining)).getText().toString().split(" ")[0]);
 
                             //find the exercise that most closely reaches the remaining calories for
                             //the given amount of minutes
@@ -632,10 +655,18 @@ public class HomeFragment extends Fragment {
 
                                 workout_item.add(Double.toString(key));
                                 workout_item.add(workouts.get(key));
-                                //TODO: add calories burned total here
+                                workout_item.add(Integer.toString(minutes));
+                                double cal_per_min= (double) fav_exercises.get((String)workouts.get(key));
+                                workout_item.add(Double.toString(cal_per_min * minutes));
 
                                 rec_workouts.add(workout_item);
 
+                            }
+
+                            System.out.println("Successfully loaded data to arraylist for recommended workouts");
+                            System.out.println("recommended workouts list:");
+                            for (ArrayList<String> item : rec_workouts){
+                                System.out.println(item.get(0) + " " + item.get(1) + " " + item.get(2) + " " + item.get(3));
                             }
 
 
@@ -649,6 +680,8 @@ public class HomeFragment extends Fragment {
                         System.out.println(e);
                     }
                 });
+
+
     }
 
 
