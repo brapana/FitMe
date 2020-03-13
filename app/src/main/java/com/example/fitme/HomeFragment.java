@@ -79,7 +79,7 @@ public class HomeFragment extends Fragment {
     protected ArrayList<ArrayList<String>> eList = new ArrayList<ArrayList<String>>();
 
 
-    //arraylist of String arraylists with each inner arralist being [delta (lower values=better reccommendation), workout name, calories burned (over x minutes)]
+    //arraylist of String arraylists with each inner arraylist being [delta (lower values=better reccommendation), workout name, minutes_performed, calories burned (minutes performed * cal burned/min)]
     protected ArrayList<ArrayList<String>> rec_workouts = new ArrayList<ArrayList<String>>();
 
 
@@ -558,11 +558,12 @@ public class HomeFragment extends Fragment {
     }
 
     //Calculates list of recommended workouts sorted by their closeness to the remaining calories
+    //arraylist of String arraylists with each inner arraylist being [delta (lower values=better reccommendation), workout name, minutes_performed, calories burned (minutes performed * cal burned/min)]
+    // arraylist sorted by delta ascending
     public void calcWorkouts(final View view, @Nullable Bundle savedInstanceState, final int minutes){
 
         final String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
         FirebaseFirestore db = ((MainActivity)getActivity()).getFS();
-
 
 
 
@@ -577,8 +578,6 @@ public class HomeFragment extends Fragment {
                             Map<String,Object> fav_exercises = (Map<String,Object>)data.get("fav_exercises");
 
                             Set<String> keys = fav_exercises.keySet();
-
-
 
 
 
@@ -620,10 +619,18 @@ public class HomeFragment extends Fragment {
 
                                 workout_item.add(Double.toString(key));
                                 workout_item.add(workouts.get(key));
-                                //TODO: add calories burned total here
+                                workout_item.add(Integer.toString(minutes));
+                                double cal_per_min= (double) fav_exercises.get((String)workouts.get(key));
+                                workout_item.add(Double.toString(cal_per_min * minutes));
 
                                 rec_workouts.add(workout_item);
 
+                            }
+
+                            System.out.println("Successfully loaded data to arraylist for recommended workouts");
+                            System.out.println("recommended workouts list:");
+                            for (ArrayList<String> item : rec_workouts){
+                                System.out.println(item.get(0) + " " + item.get(1) + " " + item.get(2) + " " + item.get(3));
                             }
 
 
@@ -637,6 +644,8 @@ public class HomeFragment extends Fragment {
                         System.out.println(e);
                     }
                 });
+
+
     }
 
 
