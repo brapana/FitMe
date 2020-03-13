@@ -1,13 +1,19 @@
 package com.example.fitme;
 
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -20,8 +26,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptionsExtension;
+import com.google.android.gms.fitness.Fitness;
+import com.google.android.gms.fitness.FitnessOptions;
+import com.google.android.gms.fitness.data.DataSet;
+import com.google.android.gms.fitness.data.DataType;
+import com.google.android.gms.fitness.request.DataReadRequest;
+import com.google.android.gms.fitness.result.DataReadResponse;
+import com.google.android.gms.fitness.result.DataReadResult;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -33,11 +53,14 @@ import com.google.firebase.firestore.SetOptions;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -55,6 +78,8 @@ public class HomeFragment extends Fragment {
     // arraylist sorted by timestamp descending
     protected ArrayList<ArrayList<String>> eList = new ArrayList<ArrayList<String>>();
 
+
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -65,14 +90,19 @@ public class HomeFragment extends Fragment {
 
         writeToDatabase();
 
-        //dummy data for exercise_history
-        String exercise_name = "running";
-        int calories_burned = 100;
-        int time_performed = 30;
+        //UNCOMMENTED THIS AFTER YOU HAVE RAN THE APP ONCE TO MAKE DATABASE OR ELSE
+        //YOU MIGHT GET null keyset() ERRORS AND HAVE TO DELETE YOUR DEVICE's UUID Firestore document
+//        //dummy data for exercise_history
+//        String exercise_name = "running";
+//        int calories_burned = 100;
+//        int time_performed = 30;
 
-        writeExerciseToDatabase(exercise_name, calories_burned, time_performed);
+        //writeExerciseToDatabase(exercise_name, calories_burned, time_performed);
 
         queryExercises();
+
+
+
 
     }
 
@@ -91,6 +121,8 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         loadData(view, savedInstanceState);
+
+        calcWorkout(view, savedInstanceState, 30);
 
         btnAddFood = getActivity().findViewById(R.id.btnAddFood);
         etCalorieGoal = getActivity().findViewById(R.id.calorieGoal);
@@ -355,49 +387,7 @@ public class HomeFragment extends Fragment {
                 });
     }
 
-    //write performed exercise to database
-    //calories_burned = cal burned per min, time_performed = time in min
-    //eventually this should go in chooseworkoutfragment
-    public void writeExerciseToDatabase(String exercise_name, int calories_burned, int time_performed) {
-        Map<String, Object> user = new HashMap<>();
-        Map<String, Object> exercise_history = new HashMap<>();
-        Map<String, Object> exercise_info = new HashMap<>();
 
-
-        String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
-
-        System.out.println("UUID is: " + UUID);
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-
-        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
-        Date time = Timestamp.now().toDate();
-
-        exercise_info.put("exercise", exercise_name);
-        exercise_info.put("calories_burned", calories_burned);
-        exercise_info.put("time_performed", time_performed);
-
-        exercise_history.put(date_format.format(time), exercise_info);
-
-        user.put("exercise_history", exercise_history);
-
-        //set (overwrite) document with key of the current device's UUID
-        db.collection("users").document(UUID)
-                .set(user, SetOptions.merge())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        System.out.println("Successfully wrote exercise data to database!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println(e);
-                    }
-                });
-    }
 
 
     //sets arraylist of String arraylists with the following structure:
@@ -518,5 +508,116 @@ public class HomeFragment extends Fragment {
                     }
                 });
     }
+
+
+    //write performed exercise to database
+    //calories_burned = cal burned per min, time_performed = time in min
+    //eventually this should go in chooseworkoutfragment
+    public void writeExerciseToDatabase(String exercise_name, int calories_burned, int time_performed) {
+        Map<String, Object> user = new HashMap<>();
+        Map<String, Object> exercise_history = new HashMap<>();
+        Map<String, Object> exercise_info = new HashMap<>();
+
+
+        String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
+
+        System.out.println("UUID is: " + UUID);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+        Date time = Timestamp.now().toDate();
+
+        exercise_info.put("exercise", exercise_name);
+        exercise_info.put("calories_burned", calories_burned);
+        exercise_info.put("time_performed", time_performed);
+
+        exercise_history.put(date_format.format(time), exercise_info);
+
+        user.put("exercise_history", exercise_history);
+
+        //set (overwrite) document with key of the current device's UUID
+        db.collection("users").document(UUID)
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Successfully wrote exercise data to database!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
+    }
+
+    //loads data from the FireStore db into the home strings displayed in the app
+    public void calcWorkout(final View view, @Nullable Bundle savedInstanceState, final int minutes){
+
+        final String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
+        FirebaseFirestore db = ((MainActivity)getActivity()).getFS();
+
+        db.collection("users").document(UUID).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot document) {
+                        if (document.exists()){
+
+                            Map<String,Object> data = document.getData();
+
+                            Map<String,Object> fav_exercises = (Map<String,Object>)data.get("fav_exercises");
+
+                            Set<String> keys = fav_exercises.keySet();
+
+
+                            //exercise that got closest to remaining calories
+                            double lowest_delta = Double.MAX_VALUE;
+                            double delta = 0.0;
+                            String closest_key = "no fav_exercises!";
+
+
+                            long calories_rem = Integer.parseInt(((TextView)view.findViewById(R.id.caloriesRemaining)).getText().toString().split(" ")[0]);
+
+                            //find the exercise that most closely reaches the remaining calories for
+                            //the given amount of minutes
+                            for (String key : keys){
+
+
+
+                               double calories_burned = (double)fav_exercises.get(key);
+
+                               delta = Math.abs(calories_rem-(calories_burned*minutes));
+
+                               if (delta < lowest_delta){
+                                   lowest_delta = delta;
+                                   closest_key = key;
+                               }
+
+
+                            }
+
+                            double calories_burned = 0;
+                            if (!closest_key.equals(""))
+                                calories_burned = ((double)fav_exercises.get(closest_key)) * 30;
+
+
+                            System.out.println("Recommended workout: "+ closest_key +  ": " + calories_burned + "calories burned in " + minutes + "minutes");
+
+
+
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
+    }
+
 
 }
