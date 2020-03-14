@@ -67,22 +67,15 @@ public class HomeFragment extends Fragment {
     private ImageView btnEditCalorieGoal;//opens popup dialog
     private Dialog dialog;
 
-    // FOR SHOWING HISTORY OF EXERCISES PERFORMED
-    // GENERATED IN queryExercises()
-    //arraylist of String arraylists with the following structure:
-    // [timestamp, exercise_name, calories burned/min, min performed]
-    // arraylist sorted by timestamp descending
-    protected ArrayList<ArrayList<String>> eList = new ArrayList<ArrayList<String>>();
-
-
-    // FOR SHOWING LIST OF RECOMMENDED EXERCISES FOR THE USER TO CHOOSE FROM
-    // GENERATED IN calcWorkouts
-    //arraylist of String arraylists with each inner arraylist being [delta (lower values=better reccommendation), workout name, minutes_performed, calories burned (minutes performed * cal burned/min)]
-    protected ArrayList<ArrayList<String>> rec_workouts = new ArrayList<ArrayList<String>>();
+    private static long calories_remaining = 0;
 
 
     public HomeFragment() {
         // Required empty public constructor
+    }
+
+    public static long getCalRem(){
+        return calories_remaining;
     }
 
     @Override
@@ -93,14 +86,14 @@ public class HomeFragment extends Fragment {
 
         //UNCOMMENTED THIS AFTER YOU HAVE RAN THE APP ONCE TO MAKE DATABASE OR ELSE
         //YOU MIGHT GET null keyset() ERRORS AND HAVE TO DELETE YOUR DEVICE's UUID Firestore document
-//        //dummy data for exercise_history
+        //dummy data for exercise_history
 //        String exercise_name = "running";
 //        int calories_burned = 100;
 //        int time_performed = 30;
+//
+//        writeExerciseToDatabase(exercise_name, calories_burned, time_performed);
 
-        //writeExerciseToDatabase(exercise_name, calories_burned, time_performed);
-
-        queryExercises();
+        //queryExercises();
 
     }
 
@@ -117,7 +110,7 @@ public class HomeFragment extends Fragment {
 
         loadData(view, savedInstanceState);
 
-        calcWorkouts(view, savedInstanceState, 30);
+        //calcWorkouts(view, savedInstanceState, 30);
 
         btnAddFood = getActivity().findViewById(R.id.btnAddFood);
         etCalorieGoal = getActivity().findViewById(R.id.calorieGoal);
@@ -200,7 +193,9 @@ public class HomeFragment extends Fragment {
 
                         //TODO Brandon: update time duration in db wherever needed
 
-                        etTimeDuration.setText(etNewDuration.getText().toString()+ " min");
+                        //etTimeDuration.setText(etNewDuration.getText().toString()+ " min");
+
+                        writeMinToDatabase(Integer.parseInt(etNewDuration.getText().toString()));
                         dialog.dismiss();
                     }
                 });
@@ -233,6 +228,7 @@ public class HomeFragment extends Fragment {
         user.put("weight", 150);
         user.put("name", "Johnathon Wickeston");
         user.put("daily_calorie_goal", 2000);
+        user.put("workout_min", 30);
 
         //calculated based on info from https://www.health.harvard.edu/diet-and-weight-loss/calories-burned-in-30-minutes-of-leisure-and-routine-activities
         //{name of exercise}, {cal burned/min}
@@ -413,6 +409,13 @@ public class HomeFragment extends Fragment {
 
                             ((TextView)view.findViewById(R.id.caloriesRemainingHome)).setText(String.format("%d cal", caloriesRemaining));
 
+                            calories_remaining = caloriesRemaining;
+
+                            long workout_min = (long)data.get("workout_min");
+                            ((TextView)view.findViewById(R.id.timeDuration)).setText(String.format("%d min", workout_min));
+
+
+
 
 
                         }
@@ -429,94 +432,7 @@ public class HomeFragment extends Fragment {
 
 
 
-    //sets arraylist of String arraylists with the following structure:
-    // [timestamp, exercise_name, calories burned/min, min performed]
-    // arraylist sorted by timestamp descending
-    //uses exercise_history Firestore document in order to populate arraylist
-    private void queryExercises(){
 
-        final String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
-        FirebaseFirestore db = ((MainActivity)getActivity()).getFS();
-
-        db.collection("users").document(UUID).get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot document) {
-                        if (document.exists()){
-
-                            Map<String,Object> data = document.getData();
-
-                            Map<String, Object> exercise_history = (Map<String, Object>)data.get("exercise_history");
-
-                            Set<String> keys = exercise_history.keySet();
-
-
-                            SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
-
-                            ArrayList<Date> keys_as_dates = new ArrayList<Date>();
-
-                            Date key_as_date = new Date();
-
-                            //convert list of keys to Date objects (so they can be sorted)
-                            for (String key: keys){
-                                try {
-                                    key_as_date = date_format.parse(key);
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-                                keys_as_dates.add(key_as_date);
-                            }
-
-                            Collections.sort(keys_as_dates, Collections.reverseOrder());
-
-
-                            //arraylists of String arraylists with the following structure: [timestamp, food_name, calories]
-                            //each outer arraylist responsible for a particular type of food (meal_time)
-                            // each arraylist will be sorted by timestamp descending
-                            eList = new ArrayList<ArrayList<String>>();
-
-
-
-                            //loop over now sorted date keys and place the objects into the correct arraylist
-                            for (Date key : keys_as_dates){
-
-                                String key_string = date_format.format(key);
-
-                                Map<String, Object> exercise_info = (Map<String, Object>)exercise_history.get(key_string);
-
-                                //declaring inner array to be added
-                                ArrayList<String> exercise_item = new ArrayList<String>();
-
-                                exercise_item.add(key_string);
-                                exercise_item.add((String)exercise_info.get("exercise"));
-                                exercise_item.add(String.valueOf(exercise_info.get("calories_burned")));
-                                exercise_item.add(String.valueOf(exercise_info.get("time_performed")));
-
-                                eList.add(exercise_item);
-
-
-                            }
-
-
-                            System.out.println("Successfully loaded data to arraylist for exercise history from Firestore");
-                            System.out.println("exercise items:");
-                            for (ArrayList<String> item : eList){
-                                System.out.println(item.get(0) + " " + item.get(1) + " " + item.get(2) + " " + item.get(3));
-                            }
-
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println(e);
-                    }
-                });
-
-        //TODO: adapter stuff here? @Marissa
-
-    }
 
     //write new calorie goal to the database
     public void writeCalorieGoalToDatabase(int calorieGoal) {
@@ -538,6 +454,36 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onSuccess(Void aVoid) {
                         System.out.println("Successfully wrote new calorie goal to database!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
+    }
+
+    //write preferred workout minutes to database
+    public void writeMinToDatabase(int workout_min) {
+        Map<String, Object> user = new HashMap<>();
+
+
+        String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
+
+        System.out.println("UUID is: " + UUID);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+        user.put("workout_min", workout_min);
+
+        db.collection("users").document(UUID)
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Successfully wrote workout_min to database!");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -593,96 +539,9 @@ public class HomeFragment extends Fragment {
                 });
     }
 
-    //Calculates list of recommended workouts sorted by their closeness to the remaining calories
-    //arraylist of String arraylists with each inner arraylist being [delta (lower values=better reccommendation), workout name, minutes_performed, calories burned (minutes performed * cal burned/min)]
-    // arraylist sorted by delta ascending
-    public void calcWorkouts(final View view, @Nullable Bundle savedInstanceState, final int minutes){
-
-        final String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
-        FirebaseFirestore db = ((MainActivity)getActivity()).getFS();
 
 
 
-        db.collection("users").document(UUID).get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot document) {
-                        if (document.exists()){
-
-                            Map<String,Object> data = document.getData();
-
-                            Map<String,Object> fav_exercises = (Map<String,Object>)data.get("fav_exercises");
-
-                            Set<String> keys = fav_exercises.keySet();
-
-
-
-                            long calories_rem = Integer.parseInt(((TextView)view.findViewById(R.id.caloriesRemainingHome)).getText().toString().split(" ")[0]);
-
-                            //find the exercise that most closely reaches the remaining calories for
-                            //the given amount of minutes
-
-                            Map<Double, String> workouts = new HashMap<Double, String>();
-
-                            for (String key : keys){
-
-
-
-                               double calories_burned = (double)fav_exercises.get(key);
-
-                               double delta = Math.abs(calories_rem-(calories_burned*minutes));
-
-                               workouts.put(delta, key);
-
-
-
-                            }
-
-
-
-                            Set<Double> workouts_keys = workouts.keySet();
-
-                            ArrayList<Double> workout_keys = new ArrayList<Double>();
-
-                            for (Double key: workouts_keys){
-                                workout_keys.add(key);
-                            }
-
-                            Collections.sort(workout_keys);
-
-                            for (Double key : workout_keys){
-                                ArrayList<String> workout_item = new ArrayList<String>();
-
-                                workout_item.add(Double.toString(key));
-                                workout_item.add(workouts.get(key));
-                                workout_item.add(Integer.toString(minutes));
-                                double cal_per_min= (double) fav_exercises.get((String)workouts.get(key));
-                                workout_item.add(Double.toString(cal_per_min * minutes));
-
-                                rec_workouts.add(workout_item);
-
-                            }
-
-                            System.out.println("Successfully loaded data to arraylist for recommended workouts");
-                            System.out.println("recommended workouts list:");
-                            for (ArrayList<String> item : rec_workouts){
-                                System.out.println(item.get(0) + " " + item.get(1) + " " + item.get(2) + " " + item.get(3));
-                            }
-
-
-
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println(e);
-                    }
-                });
-
-
-    }
 
 
 }
