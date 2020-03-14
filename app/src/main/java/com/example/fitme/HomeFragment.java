@@ -191,11 +191,8 @@ public class HomeFragment extends Fragment {
                             return;
                         }
 
-                        //TODO Brandon: update time duration in db wherever needed
-
-                        //etTimeDuration.setText(etNewDuration.getText().toString()+ " min");
-
                         writeMinToDatabase(Integer.parseInt(etNewDuration.getText().toString()));
+                        loadData(pass_view, savedInstanceState);
                         dialog.dismiss();
                     }
                 });
