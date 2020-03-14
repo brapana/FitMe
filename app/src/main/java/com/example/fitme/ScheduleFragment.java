@@ -71,5 +71,8 @@ public class ScheduleFragment extends Fragment {
             }
         });
 
+        //TODO Brandon u know what to do 8^)
+        //queryWorkoutHistory();
+
     }
 }
