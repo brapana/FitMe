@@ -13,10 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CalendarView;
-import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 
 /**
@@ -51,8 +52,13 @@ public class AddEventFragment extends Fragment {
                     int hours = timePicker.getHour(); // 0-23 hours
                     int minutes = timePicker.getMinute(); // 0-59 minutes
                     Bundle b = getArguments();
-                    long date = b.getLong("date");
-                    Toast.makeText(v.getContext(), hours+" "+minutes+" "+Long.toString(date), Toast.LENGTH_SHORT).show();
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(b.getLong("date"));
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd");
+                    String date = sdf.format(cal.getTime());
+                    date += " "+Integer.toString(hours)+":"+Integer.toString(minutes)+":00.000";
+                    //TODO Brandon add date (timestamp of next workout)
+                    Toast.makeText(v.getContext(), "Next workout time set!", Toast.LENGTH_SHORT).show();
                     ((MainActivity) getActivity()).changeFragmentFromFragment(ScheduleFragment.class);
             }
         });
