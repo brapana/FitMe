@@ -4,13 +4,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class LunchAdapter extends RecyclerView.Adapter<LunchAdapter.ViewHolder> {
@@ -55,14 +53,20 @@ public class LunchAdapter extends RecyclerView.Adapter<LunchAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         //grab all the food item fields
+        private TextView foodName;
+        private TextView foodCalories;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             //set all the fields
+            foodName = itemView.findViewById(R.id.foodName);
+            foodCalories = itemView.findViewById(R.id.foodCalories);
         }
 
         public void bind(ArrayList<String> foodItem){
             //populate fields
+            foodName.setText(foodItem.get(1));
+            foodCalories.setText(foodItem.get(2));
         }
     }
 

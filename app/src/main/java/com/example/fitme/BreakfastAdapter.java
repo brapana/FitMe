@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.w3c.dom.Text;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -55,14 +57,20 @@ public class BreakfastAdapter extends RecyclerView.Adapter<BreakfastAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         //grab all the food item fields
+        private TextView foodName;
+        private TextView foodCalories;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             //set all the fields
+            foodName = itemView.findViewById(R.id.foodName);
+            foodCalories = itemView.findViewById(R.id.foodCalories);
         }
 
         public void bind(ArrayList<String> foodItem){
             //populate fields
+            foodName.setText(foodItem.get(1));
+            foodCalories.setText(foodItem.get(2));
         }
     }
 

@@ -4,8 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.AppCompatTextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -55,14 +56,20 @@ public class DinnerAdapter extends RecyclerView.Adapter<DinnerAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         //grab all the food item fields
+        private TextView foodName;
+        private  TextView foodCalories;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             //set all the fields
+            foodName = itemView.findViewById(R.id.foodName);
+            foodCalories = itemView.findViewById(R.id.foodCalories);
         }
 
         public void bind(ArrayList<String> foodItem){
             //populate fields
+            foodName.setText(foodItem.get(1));
+            foodCalories.setText(foodItem.get(2));
         }
     }
 
