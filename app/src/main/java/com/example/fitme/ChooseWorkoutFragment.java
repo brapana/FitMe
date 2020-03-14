@@ -121,6 +121,7 @@ public class ChooseWorkoutFragment extends Fragment {
     }
 
     //Calculates list of recommended workouts sorted by their closeness to the remaining calories
+    //this value is also multiplied by the inverse percentage of times the given exercise is performed over all exercises
     //arraylist of String arraylists with each inner arraylist being [delta (lower values=better reccommendation), workout name, minutes_performed, calories burned (minutes performed * cal burned/min)]
     // arraylist sorted by delta ascending
     public void calcWorkouts(final View view, @Nullable Bundle savedInstanceState, final int minutes){
@@ -140,6 +141,8 @@ public class ChooseWorkoutFragment extends Fragment {
 
                             Map<String,Object> fav_exercises = (Map<String,Object>)data.get("fav_exercises");
 
+                            Map<String,Object> exercise_history = (Map<String,Object>)data.get("exercise_history");
+
                             Set<String> keys = fav_exercises.keySet();
 
 
@@ -153,13 +156,29 @@ public class ChooseWorkoutFragment extends Fragment {
 
                             Map<Double, String> workouts = new HashMap<Double, String>();
 
+
+                            Set<String> history_keys = exercise_history.keySet();
+
+                            ArrayList<String> history_list = new ArrayList<String>();
+
+                            for (String history_key: history_keys){
+                                Map<String, Object> history_item = (Map<String, Object>) exercise_history.get(history_key);
+                                history_list.add((String)history_item.get("exercise"));
+                            }
+
+                            //calculate delta values
                             for (String key : keys){
 
-
+                                //inverse percentage of times this exercise is performed compared to all performed exercises
+                                double exercise_freq = (double) history_list.size() / ((double)Collections.frequency(history_list, key) + .1) ;
 
                                 double calories_burned = (double)fav_exercises.get(key);
 
                                 double delta = Math.abs(calories_rem-(calories_burned*minutes));
+
+                                delta = delta * (exercise_freq);
+
+
 
                                 workouts.put(delta, key);
 
