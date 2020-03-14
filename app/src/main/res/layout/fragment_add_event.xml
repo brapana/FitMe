@@ -17,9 +17,9 @@
 
             <TimePicker
                 android:id="@+id/timePickerStart"
-                android:layout_width="273dp"
-                android:layout_height="357dp"
-                android:layout_marginTop="15dp"
+                android:layout_width="251dp"
+                android:layout_height="359dp"
+                android:layout_marginTop="32dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView8" />
@@ -30,7 +30,7 @@
                 android:layout_height="44dp"
                 android:layout_marginTop="40dp"
                 android:fontFamily="@font/montserrat_bold"
-                android:text="Please choose a start time and an end time to schedule your workout!"
+                android:text="Please choose a start time and a duration to schedule your workout!"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -41,50 +41,31 @@
                 android:id="@+id/textView8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="32dp"
                 android:fontFamily="@font/montserrat"
-                android:text="Start Time"
+                android:text="Workout Start Time"
                 android:textColor="@android:color/white"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.204"
+                app:layout_constraintHorizontal_bias="0.197"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-            <TextView
-                android:id="@+id/textView14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/montserrat"
-                android:text="End Time"
-                android:textColor="@android:color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.196"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/timePickerStart" />
-
-            <TimePicker
-                android:id="@+id/timePickerEnd"
-                android:layout_width="273dp"
-                android:layout_height="357dp"
-                android:layout_marginTop="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
             <Button
                 android:id="@+id/btnSubmitEvent"
                 android:layout_width="152dp"
-                android:layout_height="51dp"
-                android:layout_marginTop="25dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/btn_background"
                 android:fontFamily="@font/montserrat"
-                android:text="Enter Event"
+                android:text="submit"
                 android:textColor="@android:color/white"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.266"
+                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/timePickerEnd" />
+                app:layout_constraintTop_toBottomOf="@+id/timePickerStart" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </FrameLayout>

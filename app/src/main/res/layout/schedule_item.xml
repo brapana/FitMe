@@ -27,7 +27,7 @@
                 android:id="@+id/etWorkoutName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="24dp"
                 android:fontFamily="@font/montserrat"
                 android:text="Jogging"
                 android:textColor="@android:color/white"
@@ -41,28 +41,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="44dp"
                 android:fontFamily="@font/montserrat"
                 android:text="10 min"
                 android:textColor="@android:color/white"
-                app:layout_constraintEnd_toStartOf="@+id/btnAddtoFavorites"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/btnAddtoFavorites"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="23dp"
-                android:layout_marginEnd="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_favorite_outline" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/etWorkoutTimestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="12dp"
                 android:fontFamily="@font/montserrat"
                 android:text="Timestamp"

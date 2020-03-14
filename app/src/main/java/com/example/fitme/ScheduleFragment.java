@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,15 +38,10 @@ import java.util.Set;
  */
 public class ScheduleFragment extends Fragment {
 
-    public interface ClickListener {
-        void onPositionClicked(int position);
-    }
-
     private Button btnAddtoCalendar;
     //private ArrayList<ArrayList<String>> workoutHistoryList;
     private RecyclerView rvSchedule;
     private ScheduleAdapter adapter;
-    private ClickListener listener;
 
     // FOR SHOWING HISTORY OF EXERCISES PERFORMED
     // GENERATED IN queryExercises()
@@ -70,15 +66,10 @@ public class ScheduleFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         btnAddtoCalendar = getActivity().findViewById(R.id.addToCalendar);
         rvSchedule = getActivity().findViewById(R.id.rvSchedule);
-        listener = new ClickListener() {
-            @Override
-            public void onPositionClicked(int position) {
 
-            }
-        };
         workoutHistoryList = new ArrayList<ArrayList<String>>();
 
-        adapter = new ScheduleAdapter(getContext(), workoutHistoryList, listener);
+        adapter = new ScheduleAdapter(getContext(), workoutHistoryList);
         LinearLayoutManager layoutManagerB = new LinearLayoutManager(getContext());
         rvSchedule.setLayoutManager(layoutManagerB);
         rvSchedule.setAdapter(adapter);
@@ -86,7 +77,11 @@ public class ScheduleFragment extends Fragment {
         btnAddtoCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) getActivity()).changeFragmentFromFragment(AddEventFragment.class);
+                Bundle b = new Bundle();
+                b.putLong("date", ((CalendarView)getActivity().findViewById(R.id.cvSchedule)).getDate());
+                AddEventFragment newFrag = new AddEventFragment();
+                newFrag.setArguments(b);
+                getFragmentManager().beginTransaction().add(R.id.flContainer, newFrag).commit();
             }
         });
         queryExercises();
@@ -167,6 +162,9 @@ public class ScheduleFragment extends Fragment {
                                 System.out.println(item.get(0) + " " + item.get(1) + " " + item.get(2) + " " + item.get(3));
                             }
 
+                            adapter.addAll(workoutHistoryList);
+                            adapter.notifyDataSetChanged();
+
                         }
                     }
                 })
@@ -176,11 +174,6 @@ public class ScheduleFragment extends Fragment {
                         System.out.println(e);
                     }
                 });
-
-        //TODO: adapter stuff here? @Marissa
-
-        //TODO Brandon u know what to do 8^)
-        //queryWorkoutHistory();
 
     }
 }

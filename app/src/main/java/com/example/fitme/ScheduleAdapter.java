@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,19 +16,17 @@ import java.util.ArrayList;
 public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
     Context context;
     ArrayList<ArrayList<String>> exerciseList;
-    ScheduleFragment.ClickListener listener;
 
-    public ScheduleAdapter(Context context, ArrayList<ArrayList<String>> exercises, ScheduleFragment.ClickListener listener) {
+    public ScheduleAdapter(Context context, ArrayList<ArrayList<String>> exercises) {
         this.context = context;
         this.exerciseList = exercises;
-        this.listener = listener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.schedule_item, parent, false);
-        return new ViewHolder(view, listener);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -54,19 +53,15 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private ImageView btnAddtoFavorites;
-        private EditText etWorkoutTimeStamp;
-        private EditText etWorkoutName;
-        private EditText etWorkoutDuration;
-        private EditText etWorkoutCaloriesBurned;
-        private ArrayList<String> exerciseItem;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        private TextView etWorkoutTimeStamp;
+        private TextView etWorkoutName;
+        private TextView etWorkoutDuration;
+        private TextView etWorkoutCaloriesBurned;
         //grab all the food item fields
 
-        public ViewHolder(@NonNull View itemView, ScheduleFragment.ClickListener listener) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            btnAddtoFavorites = itemView.findViewById(R.id.btnAddtoFavorites);
-            btnAddtoFavorites.setOnClickListener(this);
             etWorkoutTimeStamp = itemView.findViewById(R.id.etWorkoutTimestamp);
             etWorkoutName = itemView.findViewById(R.id.etWorkoutName);
             etWorkoutDuration = itemView.findViewById(R.id.etWorkoutItemDuration);
@@ -75,16 +70,10 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
 
         public void bind(ArrayList<String> exerciseItem){
             //populate fields
-            this.exerciseItem = exerciseItem;
-            //will populate the rest of the fields
-        }
-
-        @Override
-        public void onClick(View v){
-            if (v.getId() == btnAddtoFavorites.getId()){
-                btnAddtoFavorites.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_filled));
-                //TODO Brandon add le exerciseItem to favorites (if fav list not full or however this is implemented)
-            }
+            etWorkoutTimeStamp.setText(exerciseItem.get(0));
+            etWorkoutName.setText(exerciseItem.get(1));
+            etWorkoutCaloriesBurned.setText(exerciseItem.get(2) +" cal/min");
+            etWorkoutDuration.setText(exerciseItem.get(3)+" min");
         }
     }
 
