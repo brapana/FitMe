@@ -77,11 +77,7 @@ public class ScheduleFragment extends Fragment {
         btnAddtoCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle b = new Bundle();
-                b.putLong("date", ((CalendarView)getActivity().findViewById(R.id.cvSchedule)).getDate());
-                AddEventFragment newFrag = new AddEventFragment();
-                newFrag.setArguments(b);
-                getFragmentManager().beginTransaction().add(R.id.flContainer, newFrag).commit();
+                ((MainActivity) getActivity()).changeFragmentFromFragment(AddEventFragment.class);
             }
         });
         queryExercises();
