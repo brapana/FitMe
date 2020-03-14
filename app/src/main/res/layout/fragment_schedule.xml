@@ -17,25 +17,30 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <CalendarView
-                android:id="@+id/cvSchedule"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="80dp"
-                android:layout_marginBottom="50dp"
-                android:background="@drawable/bg_calendar" />
+                android:layout_marginTop="45dp"
+                android:layout_marginBottom="25dp"
+                android:layout_weight="0"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Daily Workout History"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/addToCalendar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
                 android:layout_weight="0"
                 android:background="@drawable/btn_background"
                 android:fontFamily="@font/montserrat"
                 android:padding="5dp"
-                android:text="set event on date"
+                android:text="set workout time today"
                 android:textColor="#FFF"
                 android:textSize="14dp" />
 
