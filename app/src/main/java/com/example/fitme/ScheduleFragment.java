@@ -52,7 +52,7 @@ public class ScheduleFragment extends Fragment {
     //arraylist of String arraylists with the following structure:
     // [timestamp, exercise_name, calories burned/min, min performed]
     // arraylist sorted by timestamp descending
-    private ArrayList<ArrayList<String>> workoutHistoryList = new ArrayList<ArrayList<String>>();
+    private ArrayList<ArrayList<String>> workoutHistoryList;
 
     public ScheduleFragment() {
         // Required empty public constructor
@@ -177,7 +177,6 @@ public class ScheduleFragment extends Fragment {
                     }
                 });
 
-        //TODO: adapter stuff here? @Marissa
 
     }
 }
