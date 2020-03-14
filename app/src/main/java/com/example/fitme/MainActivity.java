@@ -46,13 +46,16 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -68,10 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private FitnessOptions fitnessOptions = FitnessOptions.builder()
-            .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-            .build();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,18 +147,21 @@ public class MainActivity extends AppCompatActivity {
 
     //accesses Google Fit data, prompts user for authentication and permissions
     //if there is no current login
+    //Adds the latest google fit walk as a new exercise if it has not been added already
     private void accessGoogleFit() {
 
-        //System.out.println("account email: " + account.getAccount());
-
-//        Calendar cal = Calendar.getInstance();
-//        cal.setTime(new Date());
-//        final long endTime = cal.getTimeInMillis();
-//        //cal.add(Calendar.YEAR, -1);
-//        long startTime = cal.getTimeInMillis() - 86400000;
+        FitnessOptions fitnessOptions = FitnessOptions.builder()
+                .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+                .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+                .addDataType(DataType.AGGREGATE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
+                .addDataType(DataType.AGGREGATE_MOVE_MINUTES, FitnessOptions.ACCESS_READ)
+                .addDataType(DataType.TYPE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
+                .addDataType(DataType.TYPE_MOVE_MINUTES, FitnessOptions.ACCESS_READ)
+                .build();
 
         long endTime = System.currentTimeMillis();
-        long startTime = endTime - 86400000;
+        //long startTime = endTime - 86400000;
+        long startTime = endTime - 864000000;
 
         System.out.println("times for google fit:");
         System.out.println(startTime);
@@ -180,14 +182,9 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("requested permissions");
         }
 
-        //System.out.println(account.getEmail());
-
-
-
-
 
         DataReadRequest readRequest = new DataReadRequest.Builder()
-                .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
+                .aggregate(DataType.AGGREGATE_MOVE_MINUTES, DataType.TYPE_MOVE_MINUTES)
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
                 .bucketByTime(1, TimeUnit.DAYS)
                 //.bucketBySession()
@@ -203,13 +200,21 @@ public class MainActivity extends AppCompatActivity {
                     public void onSuccess(DataReadResponse response) {
                         // Use response data here
                         System.out.println("got fitness data");
+                        int walked_min = 0;
                         for (Bucket bucket : response.getBuckets()) {
-                            if (bucket.getDataSet(DataType.AGGREGATE_STEP_COUNT_DELTA).getDataPoints().size() > 0)
-                                System.out.println(bucket.getDataSet(DataType.AGGREGATE_STEP_COUNT_DELTA).getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt());
-
+                            if (bucket.getDataSet(DataType.AGGREGATE_MOVE_MINUTES).getDataPoints().size() > 0) {
+                                //System.out.println(bucket.getDataSet(DataType.AGGREGATE_STEP_COUNT_DELTA).getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt());
+                                System.out.println("FIT TEST");
+                                System.out.println(bucket.getDataSet(DataType.AGGREGATE_MOVE_MINUTES).getDataPoints().get(0).getValue(Field.FIELD_DURATION));
+                                walked_min = bucket.getDataSet(DataType.AGGREGATE_MOVE_MINUTES).getDataPoints().get(0).getValue(Field.FIELD_DURATION).asInt();
+                                break;
+                                //System.out.println(bucket.getDataSet(DataType.TYPE_MOVE_MINUTES).getDataPoints().get(0).getValue(Field));
+                            }
                         }
+                        //try to add fit workout, wont add if walked_min is 0 or workout already was added
+                        if (walked_min != 0)
+                            addFitWorkout("Google Fit Walk", 4*walked_min, walked_min);
 
-                        //TODO: put this step count into exercise history (once per day)
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -221,36 +226,90 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-
-
-
-
-
     }
 
+    //write performed exercise to database (this one is meant for google fit data only)
+    //calories_burned = cal burned per min, time_performed = time in min
+    //eventually this should go in chooseworkoutfragment
+    public void writeExerciseToDatabase(String exercise_name, int calories_burned, int time_performed) {
+        Map<String, Object> user = new HashMap<>();
+        Map<String, Object> exercise_history = new HashMap<>();
+        Map<String, Object> exercise_info = new HashMap<>();
 
 
-//    private class VerifyDataTask extends AsyncTask<Void, Void, Void> {
-//        protected Void doInBackground(Void... params) {
-//
-//            long total = 0;
-//
-//
-//            PendingResult<DailyTotalResult> result = Fitness.HistoryApi.readDailyTotal(account,DataType.TYPE_STEP_COUNT_DELTA);
-//            DailyTotalResult totalResult = result.await(30, TimeUnit.SECONDS);
-//            if (totalResult.getStatus().isSuccess()) {
-//                DataSet totalSet = totalResult.getTotal();
-//                total = totalSet.isEmpty()
-//                        ? 0
-//                        : totalSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
-//            } else {
-//                Log.w("fit", "There was a problem getting the step count.");
-//            }
-//
-//            Log.i("fit", "Total steps: " + total);
-//
-//            return null;
-//        }
-//    }
+        String UUID = get_uuid(this);
+
+        System.out.println("UUID is: " + UUID);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+        Date time = Timestamp.now().toDate();
+
+        exercise_info.put("exercise", exercise_name);
+        exercise_info.put("calories_burned", calories_burned);
+        exercise_info.put("time_performed", time_performed);
+
+        exercise_history.put(date_format.format(time), exercise_info);
+
+        user.put("exercise_history", exercise_history);
+
+        //set (overwrite) document with key of the current device's UUID
+        db.collection("users").document(UUID)
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Successfully wrote exercise data to database!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
+    }
+
+    //if google fit workout doesnt exist, adds it to the database as an exercise
+    public void addFitWorkout(final String exercise_name, final int calories_burned, final int time_performed){
+
+        final String UUID = get_uuid(this);
+        FirebaseFirestore db = getFS();
+
+        db.collection("users").document(UUID).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot document) {
+                        if (document.exists()){
+
+                            Map<String,Object> data = document.getData();
+
+                            Map<String, Object> exercise_history = (Map<String, Object>)data.get("exercise_history");
+
+                            Set<String> exercise_keys = exercise_history.keySet();
+
+                            for (String key: exercise_keys){
+                                Map<String, Object> exercise_info = (Map<String, Object>)exercise_history.get(key);
+                                if ((long)exercise_info.get("calories_burned") == calories_burned
+                                        && (long)exercise_info.get("time_performed") == time_performed
+                                        && ((String)exercise_info.get("exercise")).equals(exercise_name)){
+                                    return;
+                                }
+                            }
+                            writeExerciseToDatabase(exercise_name, calories_burned, time_performed);
+
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
+
+    }
 
 }
