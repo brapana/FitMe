@@ -57,10 +57,10 @@ public class FavoritesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        rvEx = getActivity().findViewById(R.id.rvEx);
         LinearLayoutManager layoutManagerE = new LinearLayoutManager(getContext());
         rvEx.setLayoutManager(layoutManagerE);
         rvEx.setAdapter(adapterE);
-
 
         queryFavExercises(view, savedInstanceState);
     }
