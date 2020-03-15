@@ -330,9 +330,7 @@ public class MainActivity extends AppCompatActivity {
 
                             for (String key: exercise_keys){
                                 Map<String, Object> exercise_info = (Map<String, Object>)exercise_history.get(key);
-                                if ((long)exercise_info.get("calories_burned") == calories_burned
-                                        && (long)exercise_info.get("time_performed") == time_performed
-                                        && ((String)exercise_info.get("exercise")).equals(exercise_name)){
+                                if (((String)exercise_info.get("exercise")).equals(exercise_name)){
                                     return;
                                 }
                             }

@@ -38,6 +38,11 @@ import java.util.Map;
 public class ProfileFragment extends Fragment {
     private ImageView btnEditProfile;
     private Dialog dialog;
+    private double BMR = 0.0;
+    private long _weight = 0;
+    private long _height = 0;
+    private long _age = 0;
+    private String _gender = "";
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -81,21 +86,34 @@ public class ProfileFragment extends Fragment {
                             //TODO Brandon update height
                             String height = etHeight.getText().toString();
                             writeHeight(Integer.parseInt(height));
+                            _height = Integer.parseInt(height);
+                            calcBMR();
+                            writeCalGoal((int)(BMR*1.2));
                         }
                         if (!etWeight.getText().toString().equals("")){
                             //TODO Brandon update weight
                             String weight = etWeight.getText().toString();
                             writeWeight(Integer.parseInt(weight));
+                            _weight = Integer.parseInt(weight);
+                            calcBMR();
+                            writeCalGoal((int)(BMR*1.2));
                         }
                         if (!etAge.getText().toString().equals("")){
                             //TODO Brandon update age;
                             String age = etAge.getText().toString();
                             writeAge(Integer.parseInt(age));
+                            _age = Integer.parseInt(age);
+                            calcBMR();
+                            writeCalGoal((int)(BMR*1.2));
                         }
                         if (!etGender.getText().toString().equals("")){
                             //TODO Brandon update gender
                             String gender = etGender.getText().toString();
                             writeGender(gender);
+                            _gender = gender;
+                            calcBMR();
+                            writeCalGoal((int)(BMR*1.2));
+
                         }
                         dialog.dismiss();
                     }
@@ -105,6 +123,7 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
+
                     }
                 });
 
@@ -119,15 +138,13 @@ public class ProfileFragment extends Fragment {
     //calculates the BMR according to the formulas from here:
     // (https://www.everydayhealth.com/weight/boost-weight-loss-by-knowing-your-bmr.aspx)
     // assumes weight in pounds, height in inches, and age in years
-    public double calcBMR(long weight, long height, long age, String gender){
+    public void calcBMR(){
 
-        double BMR;
-        if (gender.toLowerCase().equals("male"))
-            BMR = 66 + (6.23 * weight) + (12.7 * height) - (6.8 * age);
+        if (_gender.toLowerCase().equals("male"))
+            BMR = 66 + (6.23 * _weight) + (12.7 * _height) - (6.8 * _age);
         else
-            BMR = 655 + (4.35 * weight) + (4.7 * height) - (4.7 * age);
+            BMR = 655 + (4.35 * _weight) + (4.7 * _height) - (4.7 * _age);
 
-        return BMR;
     }
 
     //loads data from the FireStore db into the profile strings displayed in the app
@@ -144,26 +161,27 @@ public class ProfileFragment extends Fragment {
 
                             Map<String,Object> data = document.getData();
 
-                            long weight = (long)data.get("weight");
-                            long height = (long)data.get("height");
-                            long age = (long)data.get("age");
-                            String gender = (String)data.get("gender");
-                            double BMR = calcBMR(weight, height, age, gender);
+                            _weight = (long)data.get("weight");
+                            _height = (long)data.get("height");
+                            _age = (long)data.get("age");
+                            _gender = (String)data.get("gender");
+                            calcBMR();
 
                             //update the viewable text with the values from FireBase
                             ((TextView)view.findViewById(R.id.name)).setText((String)data.get("name"));
 
-                            ((TextView)view.findViewById(R.id.age)).setText(String.format("%d yrs.", age));
+                            ((TextView)view.findViewById(R.id.age)).setText(String.format("%d yrs.", _age));
 
-                            ((TextView)view.findViewById(R.id.gender)).setText((String)gender);
+                            ((TextView)view.findViewById(R.id.gender)).setText((String)_gender);
 
-                            ((TextView)view.findViewById(R.id.height)).setText(String.format("%d in.", height));
+                            ((TextView)view.findViewById(R.id.height)).setText(String.format("%d in.", _height));
 
-                            ((TextView)view.findViewById(R.id.weight)).setText(String.format("%d lbs.", weight));
+                            ((TextView)view.findViewById(R.id.weight)).setText(String.format("%d lbs.", _weight));
 
                             ((TextView)view.findViewById(R.id.bmr)).setText(String.format("%.1f", BMR));
 
                             System.out.println("Successfully loaded data for profile view from Firestore");
+
 
                         }
                     }
@@ -176,6 +194,35 @@ public class ProfileFragment extends Fragment {
                 });
     }
 
+
+    //write daily calorie goal
+    public void writeCalGoal(int calorie_goal) {
+        Map<String, Object> user = new HashMap<>();
+
+        String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
+
+        System.out.println("UUID is: " + UUID);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        user.put("daily_calorie_goal", calorie_goal);
+
+        //set (overwrite) document with key of the current device's UUID
+        db.collection("users").document(UUID)
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Successfully wrote new calorie goal to database!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
+    }
     //write inputted name
     public void writeName(String name) {
         Map<String, Object> user = new HashMap<>();

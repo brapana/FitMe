@@ -443,9 +443,6 @@ public class HomeFragment extends Fragment {
 
 
 
-
-
-
     //write new calorie goal to the database
     public void writeCalorieGoalToDatabase(int calorieGoal) {
         Map<String, Object> user = new HashMap<>();
