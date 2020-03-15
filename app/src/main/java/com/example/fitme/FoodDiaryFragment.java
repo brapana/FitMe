@@ -347,7 +347,7 @@ public class FoodDiaryFragment extends Fragment {
                             ((TextView)view.findViewById(R.id.caloriesConsumedHome)).setText(String.format("%d cal", totalCal));
 
 
-                            long caloriesRemaining = totalCal-totalCalBurned;
+                            long caloriesRemaining = calorieGoal - (totalCal-totalCalBurned);
 
                             ((TextView)view.findViewById(R.id.caloriesRemainingHome)).setText(String.format("%d cal", caloriesRemaining));
 

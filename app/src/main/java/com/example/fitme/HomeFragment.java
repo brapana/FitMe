@@ -402,7 +402,7 @@ public class HomeFragment extends Fragment {
 
                             ((TextView)view.findViewById(R.id.caloriesBurned)).setText(String.format("%d cal", totalCalBurned));
 
-                            long caloriesRemaining = totalCal-totalCalBurned;
+                            long caloriesRemaining = calorieGoal - (totalCal-totalCalBurned);
 
                             ((TextView)view.findViewById(R.id.caloriesRemainingHome)).setText(String.format("%d cal", caloriesRemaining));
 
