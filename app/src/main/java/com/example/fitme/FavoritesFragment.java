@@ -60,6 +60,7 @@ public class FavoritesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         rvEx = getActivity().findViewById(R.id.rvEx);
         aList = new ArrayList<ArrayList<String>>();
+        adapterE = new ExAdapter(getContext(), aList);
         LinearLayoutManager layoutManagerE = new LinearLayoutManager(getContext());
         rvEx.setLayoutManager(layoutManagerE);
         rvEx.setAdapter(adapterE);
