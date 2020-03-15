@@ -96,10 +96,10 @@ public class FavoritesFragment extends Fragment {
                         if (!etWorkoutName.getText().toString().equals("") && !etNewCalsBurnedPerMin.getText().toString().equals("")){
                             String workoutName = etWorkoutName.getText().toString();
                             String calsPerMin = etNewCalsBurnedPerMin.getText().toString();
-                            //TODO Brandon le add le new le workout
 
                             writeFavExercise(workoutName, Double.parseDouble(calsPerMin));
                             Toast.makeText(v.getContext(), "A workout has been added to your favorites!", Toast.LENGTH_SHORT).show();
+                            ((MainActivity) getActivity()).changeFragmentFromFragment(FavoritesFragment.class);
                             dialog.dismiss();
                             return;
 
