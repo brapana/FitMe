@@ -30,6 +30,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,28 +66,23 @@ public class AddEventFragment extends Fragment {
             public void onClick(View v) {
                     int hours = timePicker.getHour(); // 0-23 hours
                     int minutes = timePicker.getMinute(); // 0-59 minutes
-                    Calendar cal = Calendar.getInstance();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd");
-                    String date = sdf.format(cal.getTime());
-                    date += " "+Integer.toString(hours)+":"+Integer.toString(minutes)+":00.000";
-                    //TODO Brandon add date (timestamp of next workout) didn't check if time is in the past
 
-                    System.out.println("DATE:");
-                    System.out.println(date);
 
-                    SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-M-dd HH:mm.ss.SSS");
+                    Calendar date = Calendar.getInstance();
+                    date.set(Calendar.HOUR_OF_DAY, 0);
+                    date.set(Calendar.MINUTE, 0);
+                    date.add(Calendar.HOUR_OF_DAY, hours);
+                    date.add(Calendar.MINUTE, minutes);
 
-                    Date parsed_date = new Date();
-                try {
-                    parsed_date = sdf2.parse(date);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
 
-                    startAlarmBroadcastReceiver(getContext(), parsed_date.getTime()+110000);
+                    //set alarm for 10 min before the inputted time
+                    startAlarmBroadcastReceiver(getContext(), date.getTimeInMillis()-600000);
 
 
                     writeTimeToDatabase(hours, minutes);
+
+
+
 
                 Toast.makeText(v.getContext(), "Next workout time set!", Toast.LENGTH_SHORT).show();
                     ((MainActivity) getActivity()).changeFragmentFromFragment(ScheduleFragment.class);
@@ -103,7 +99,7 @@ public class AddEventFragment extends Fragment {
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         // Remove any previous pending intent.
         alarmManager.cancel(pendingIntent);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
 
         System.out.println(time);
         System.out.println("set time vs system time");
@@ -111,7 +107,7 @@ public class AddEventFragment extends Fragment {
     }
 
     //write next notification time to database
-    public void writeTimeToDatabase(long hours, long minutes) {
+    public void writeTimeToDatabase(int hours, int minutes) {
         Map<String, Object> user = new HashMap<>();
 
 
@@ -121,21 +117,16 @@ public class AddEventFragment extends Fragment {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        String time  = String.format("%d:%d", hours, minutes);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        String time_mark = "am";
 
-        Date time_date = new Date();
-
-        try {
-            sdf.parse(time);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (hours > 12){
+            time_mark = "pm";
+            hours -= 12;
         }
 
-        SimpleDateFormat sdf2 = new SimpleDateFormat("hh:mm aa");
+        String time = String.format("%02d:%02d %s", hours, minutes, time_mark);
 
-        time = sdf2.format(time_date);
 
         user.put("next_notification", time);
 

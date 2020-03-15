@@ -37,7 +37,7 @@ public class MyReceiver extends BroadcastReceiver {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "FitMe")
                 .setSmallIcon(R.drawable.common_full_open_on_phone)
                 .setContentTitle("FitMe")
-                .setContentText("Time for a workout?")
+                .setContentText("Workout in 10 minutes!")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
