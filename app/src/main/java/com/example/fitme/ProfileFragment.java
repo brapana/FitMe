@@ -1,6 +1,9 @@
 package com.example.fitme;
 
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,8 +13,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,7 +31,8 @@ import java.util.Map;
  * A simple {@link Fragment} subclass.
  */
 public class ProfileFragment extends Fragment {
-
+    private ImageView btnEditProfile;
+    private Dialog dialog;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -42,7 +49,59 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        btnEditProfile = getActivity().findViewById(R.id.btnEditProfile);
+        dialog = new Dialog(getActivity());
 
+        btnEditProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.setContentView(R.layout.popup_profile);
+                final Button btnCancel = dialog.findViewById(R.id.btnCancelProfile);
+                final Button btnSubmit = dialog.findViewById(R.id.btnSubmitProfile);
+                final EditText etName = dialog.findViewById(R.id.etName);
+                final EditText etHeight = dialog.findViewById(R.id.etHeight);
+                final EditText etWeight = dialog.findViewById(R.id.etWeight);
+                final EditText etAge = dialog.findViewById(R.id.etAge);
+                final EditText etGender = dialog.findViewById(R.id.etGender);
+
+                btnSubmit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!etName.getText().toString().equals("")){
+                            //TODO Brandon update name
+                            String name = etName.getText().toString();
+                        }
+                        if (!etHeight.getText().toString().equals("")){
+                            //TODO Brandon update height
+                            String height = etHeight.getText().toString();
+                        }
+                        if (!etWeight.getText().toString().equals("")){
+                            //TODO Brandon update weight
+                            String weight = etWeight.getText().toString();
+                        }
+                        if (!etAge.getText().toString().equals("")){
+                            //TODO Brandon update age;
+                            String age = etAge.getText().toString();
+                        }
+                        if (!etGender.getText().toString().equals("")){
+                            //TODO Brandon update gender
+                            String gender = etGender.getText().toString();
+                        }
+                        dialog.dismiss();
+                    }
+                });
+
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
         loadData(view, savedInstanceState);
 
     }
