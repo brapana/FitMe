@@ -56,15 +56,15 @@ public class ExAdapter extends RecyclerView.Adapter<ExAdapter.ViewHolder>{
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             //set all the fields
-            etFavoritesCalBurnedPerMinute = itemView.findViewById(R.id.etFavoritesName);
-            etFavoritesName = itemView.findViewById(R.id.etFavoritesCalsBurned);
+            etFavoritesName= itemView.findViewById(R.id.etFavoritesName);
+            etFavoritesCalBurnedPerMinute = itemView.findViewById(R.id.etFavoritesCalsBurned);
 
         }
 
         public void bind(ArrayList<String> exerciseItem){
             //populate fields
-            etFavoritesName.setText(exerciseItem.get(1));
-            etFavoritesCalBurnedPerMinute.setText("Burn ~"+Integer.toString((int)Math.round(Double.parseDouble(exerciseItem.get(3)))) +" cals");
+            etFavoritesName.setText(exerciseItem.get(0));
+            etFavoritesCalBurnedPerMinute.setText(Integer.toString((int)Math.round(Double.parseDouble(exerciseItem.get(1)))) +" cals/min");
         }
     }
 }

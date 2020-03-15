@@ -1,6 +1,9 @@
 package com.example.fitme;
 
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,9 +40,10 @@ import java.util.Set;
  * A simple {@link Fragment} subclass.
  */
 public class FavoritesFragment extends Fragment {
-
+    private ImageView btnAddFavorites;
     private RecyclerView rvEx;
     protected ExAdapter adapterE;
+    private Dialog dialog;
 
     //ARRAYLIST OF FAVORITE EXERCISES
     //arraylist of String arraylists with each inner arraylist being [exercise name, cal burned/min]
@@ -58,11 +66,59 @@ public class FavoritesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        btnAddFavorites = getActivity().findViewById(R.id.btnAddFavorite);
+        dialog = new Dialog(getActivity());
         rvEx = getActivity().findViewById(R.id.rvEx);
         aList = new ArrayList<ArrayList<String>>();
+        adapterE = new ExAdapter(getContext(), aList);
         LinearLayoutManager layoutManagerE = new LinearLayoutManager(getContext());
         rvEx.setLayoutManager(layoutManagerE);
         rvEx.setAdapter(adapterE);
+
+        btnAddFavorites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.setContentView(R.layout.popup_add_fav);
+                final Button btnSubmit;
+                final Button btnCancel;
+                final EditText etWorkoutName;
+                final EditText etNewCalsBurnedPerMin;
+
+                btnSubmit = dialog.findViewById(R.id.btnSubmitNewFav);
+                btnCancel = dialog.findViewById(R.id.btnCancelFav);
+                etWorkoutName = dialog.findViewById(R.id.etWorkoutName);
+                etNewCalsBurnedPerMin = dialog.findViewById(R.id.etNewCalsBurnedPerMin);
+
+                btnSubmit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!etWorkoutName.getText().toString().equals("") && !etNewCalsBurnedPerMin.getText().toString().equals("")){
+                            String workoutName = etWorkoutName.getText().toString();
+                            String calsPerMin = etNewCalsBurnedPerMin.getText().toString();
+                            //TODO Brandon le add le new le workout
+
+
+                            Toast.makeText(v.getContext(), "A workout has been added to your favorites!", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            return;
+
+                        }
+                        Toast.makeText(v.getContext(), "Please fill in all fields!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                });
+
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
 
         queryFavExercises(view, savedInstanceState);
     }
