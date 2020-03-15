@@ -21,9 +21,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -70,22 +75,27 @@ public class ProfileFragment extends Fragment {
                         if (!etName.getText().toString().equals("")){
                             //TODO Brandon update name
                             String name = etName.getText().toString();
+                            writeName(name);
                         }
                         if (!etHeight.getText().toString().equals("")){
                             //TODO Brandon update height
                             String height = etHeight.getText().toString();
+                            writeHeight(Integer.parseInt(height));
                         }
                         if (!etWeight.getText().toString().equals("")){
                             //TODO Brandon update weight
                             String weight = etWeight.getText().toString();
+                            writeWeight(Integer.parseInt(weight));
                         }
                         if (!etAge.getText().toString().equals("")){
                             //TODO Brandon update age;
                             String age = etAge.getText().toString();
+                            writeAge(Integer.parseInt(age));
                         }
                         if (!etGender.getText().toString().equals("")){
                             //TODO Brandon update gender
                             String gender = etGender.getText().toString();
+                            writeGender(gender);
                         }
                         dialog.dismiss();
                     }
@@ -156,6 +166,149 @@ public class ProfileFragment extends Fragment {
                             System.out.println("Successfully loaded data for profile view from Firestore");
 
                         }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
+    }
+
+    //write inputted name
+    public void writeName(String name) {
+        Map<String, Object> user = new HashMap<>();
+
+        String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
+
+        System.out.println("UUID is: " + UUID);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        user.put("name", name);
+
+        //set (overwrite) document with key of the current device's UUID
+        db.collection("users").document(UUID)
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Successfully wrote profile data to database!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
+    }
+    //write inputted weight
+    public void writeWeight(int weight) {
+        Map<String, Object> user = new HashMap<>();
+
+        String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
+
+        System.out.println("UUID is: " + UUID);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        user.put("weight", weight);
+
+        //set (overwrite) document with key of the current device's UUID
+        db.collection("users").document(UUID)
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Successfully wrote profile data to database!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
+    }
+    //write inputted height
+    public void writeHeight(int height) {
+        Map<String, Object> user = new HashMap<>();
+
+        String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
+
+        System.out.println("UUID is: " + UUID);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        user.put("height", height);
+
+        //set (overwrite) document with key of the current device's UUID
+        db.collection("users").document(UUID)
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Successfully wrote profile data to database!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
+    }
+
+    //write inputted age
+    public void writeAge(int age) {
+        Map<String, Object> user = new HashMap<>();
+
+        String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
+
+        System.out.println("UUID is: " + UUID);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        user.put("age", age);
+
+        //set (overwrite) document with key of the current device's UUID
+        db.collection("users").document(UUID)
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Successfully wrote profile data to database!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
+    }
+
+    //write inputted gender
+    public void writeGender(String gender) {
+        Map<String, Object> user = new HashMap<>();
+
+        String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
+
+        System.out.println("UUID is: " + UUID);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        user.put("gender", gender);
+
+        //set (overwrite) document with key of the current device's UUID
+        db.collection("users").document(UUID)
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Successfully wrote profile data to database!");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

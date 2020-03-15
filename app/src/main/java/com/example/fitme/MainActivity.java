@@ -1,6 +1,7 @@
 package com.example.fitme;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
@@ -8,6 +9,8 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -187,8 +190,24 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(endTime);
 
 
+
         GoogleSignInAccount account = GoogleSignIn
                 .getAccountForExtension(this, fitnessOptions);
+
+
+
+        //get the user's name
+        AccountManager am = AccountManager.get(this); // "this" references the current Context
+
+        Account[] accounts = am.getAccounts();
+
+
+        //displays emails? why?
+        System.out.println("Display Name:");
+
+        for (Account acc : accounts) {
+            System.out.println(acc.toString());
+        }
 
 
         if (!GoogleSignIn.hasPermissions(account, fitnessOptions)) {
@@ -329,6 +348,36 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    //write name to database
+    public void writeNameToDatabase(String name) {
+        Map<String, Object> user = new HashMap<>();
+
+        String UUID = get_uuid(this);
+
+        System.out.println("UUID is: " + UUID);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+        user.put("name", name);
+
+        //set (overwrite) document with key of the current device's UUID
+        db.collection("users").document(UUID)
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Successfully wrote exercise data to database!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
     }
 
 

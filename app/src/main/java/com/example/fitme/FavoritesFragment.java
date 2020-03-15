@@ -24,6 +24,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.lang.reflect.Array;
 import java.text.ParseException;
@@ -97,7 +98,7 @@ public class FavoritesFragment extends Fragment {
                             String calsPerMin = etNewCalsBurnedPerMin.getText().toString();
                             //TODO Brandon le add le new le workout
 
-
+                            writeFavExercise(workoutName, Double.parseDouble(calsPerMin));
                             Toast.makeText(v.getContext(), "A workout has been added to your favorites!", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                             return;
@@ -183,6 +184,40 @@ public class FavoritesFragment extends Fragment {
                 });
 
 
+    }
+
+    //write new favorite exercise to database
+    public void writeFavExercise(String exercise_name, double cal_per_min) {
+        Map<String, Object> user = new HashMap<>();
+
+
+        String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
+
+        System.out.println("UUID is: " + UUID);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+        Map<String, Object> fav_exercises = new HashMap<String, Object>();
+
+        fav_exercises.put(exercise_name, cal_per_min);
+
+        user.put("fav_exercises", fav_exercises);
+
+        db.collection("users").document(UUID)
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Successfully wrote next notification time to database!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
     }
 
 
