@@ -6,12 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.AppCompatTextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class DinnerAdapter extends RecyclerView.Adapter<DinnerAdapter.ViewHolder> {
@@ -53,7 +50,6 @@ public class DinnerAdapter extends RecyclerView.Adapter<DinnerAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         //grab all the food item fields
         private TextView foodName;
@@ -72,5 +68,4 @@ public class DinnerAdapter extends RecyclerView.Adapter<DinnerAdapter.ViewHolder
             foodCalories.setText(foodItem.get(2));
         }
     }
-
 }

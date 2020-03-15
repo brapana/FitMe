@@ -1,13 +1,10 @@
 package com.example.fitme;
 
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,15 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CalendarView;
-import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,10 +26,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ScheduleFragment extends Fragment {
 
     private Button btnAddtoCalendar;
@@ -123,13 +113,10 @@ public class ScheduleFragment extends Fragment {
 
                             Collections.sort(keys_as_dates, Collections.reverseOrder());
 
-
                             //arraylists of String arraylists with the following structure: [timestamp, food_name, calories]
                             //each outer arraylist responsible for a particular type of food (meal_time)
                             // each arraylist will be sorted by timestamp descending
                             workoutHistoryList = new ArrayList<ArrayList<String>>();
-
-
 
                             //loop over now sorted date keys and place the objects into the correct arraylist
                             for (Date key : keys_as_dates){
@@ -148,9 +135,7 @@ public class ScheduleFragment extends Fragment {
 
                                 workoutHistoryList.add(exercise_item);
 
-
                             }
-
 
                             System.out.println("Successfully loaded data to arraylist for exercise history from Firestore");
                             System.out.println("exercise items:");
@@ -170,7 +155,6 @@ public class ScheduleFragment extends Fragment {
                         System.out.println(e);
                     }
                 });
-
 
     }
 }

@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,16 +29,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class AddFoodFragment extends Fragment {
     private Button btnSubmitFoodItem;
     private EditText etFoodName;
@@ -173,8 +166,6 @@ public class AddFoodFragment extends Fragment {
         String url = "https://api.edamam.com/api/food-database/parser?app_id=396d20fe&app_key=" +
                 "951e412e3df060cf1c1bd5d6208204a4&ingr="+food.toLowerCase();
 
-
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
@@ -196,24 +187,18 @@ public class AddFoodFragment extends Fragment {
                             etFoodCalories.setText("0");
                         }
 
-
-
-
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
                         System.out.println("API access failed");
                         etFoodCalories.setText(0);
 
                     }
                 });
 
-
         MySingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
-
 
     }
 }

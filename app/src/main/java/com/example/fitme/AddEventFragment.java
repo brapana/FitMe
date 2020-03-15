@@ -22,22 +22,13 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class AddEventFragment extends Fragment {
     private Button btnSubmitEvent;
     private TimePicker timePicker;
@@ -67,22 +58,16 @@ public class AddEventFragment extends Fragment {
                     int hours = timePicker.getHour(); // 0-23 hours
                     int minutes = timePicker.getMinute(); // 0-59 minutes
 
-
                     Calendar date = Calendar.getInstance();
                     date.set(Calendar.HOUR_OF_DAY, 0);
                     date.set(Calendar.MINUTE, 0);
                     date.add(Calendar.HOUR_OF_DAY, hours);
                     date.add(Calendar.MINUTE, minutes);
 
-
                     //set alarm for 10 min before the inputted time
                     startAlarmBroadcastReceiver(getContext(), date.getTimeInMillis()-600000);
 
-
                     writeTimeToDatabase(hours, minutes);
-
-
-
 
                 Toast.makeText(v.getContext(), "Next workout time set!", Toast.LENGTH_SHORT).show();
                     ((MainActivity) getActivity()).changeFragmentFromFragment(ScheduleFragment.class);
@@ -110,13 +95,11 @@ public class AddEventFragment extends Fragment {
     public void writeTimeToDatabase(int hours, int minutes) {
         Map<String, Object> user = new HashMap<>();
 
-
         String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
 
         System.out.println("UUID is: " + UUID);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
 
         String time_mark = "am";
 
@@ -126,7 +109,6 @@ public class AddEventFragment extends Fragment {
         }
 
         String time = String.format("%02d:%02d %s", hours, minutes, time_mark);
-
 
         user.put("next_notification", time);
 
@@ -145,7 +127,5 @@ public class AddEventFragment extends Fragment {
                     }
                 });
     }
-
-
 
 }

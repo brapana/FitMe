@@ -1,6 +1,5 @@
 package com.example.fitme;
 
-
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -26,20 +25,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
-import java.lang.reflect.Array;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class FavoritesFragment extends Fragment {
     private ImageView btnAddFavorites;
     private RecyclerView rvEx;
@@ -54,7 +45,6 @@ public class FavoritesFragment extends Fragment {
     public FavoritesFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -158,9 +148,7 @@ public class FavoritesFragment extends Fragment {
                                 exercise_item.add(key);
                                 exercise_item.add(Double.toString((Double)fav_exercises.get(key)));
 
-
                                 aList.add(exercise_item);
-
 
                             }
 
@@ -172,7 +160,6 @@ public class FavoritesFragment extends Fragment {
                             adapterE.addAll(aList);
                             adapterE.notifyDataSetChanged();
 
-
                         }
                     }
                 })
@@ -182,7 +169,6 @@ public class FavoritesFragment extends Fragment {
                         System.out.println(e);
                     }
                 });
-
 
     }
 
@@ -219,6 +205,5 @@ public class FavoritesFragment extends Fragment {
                     }
                 });
     }
-
 
 }

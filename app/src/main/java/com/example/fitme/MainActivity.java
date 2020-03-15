@@ -1,52 +1,27 @@
 package com.example.fitme;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.view.MenuItem;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptionsExtension;
-import com.google.android.gms.common.Scopes;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.FitnessOptions;
 import com.google.android.gms.fitness.data.Bucket;
-import com.google.android.gms.fitness.data.DataPoint;
-import com.google.android.gms.fitness.data.DataSet;
-import com.google.android.gms.fitness.data.DataSource;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.DataReadRequest;
-import com.google.android.gms.fitness.result.DailyTotalResult;
 import com.google.android.gms.fitness.result.DataReadResponse;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -96,10 +71,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         accessGoogleFit();
-
-
-        //set alarm to ring in x milliseconds
-        //startAlarmBroadcastReceiver(this, 10000);
 
         bottomNavigationMenu = findViewById(R.id.bottomNavigation);
 
@@ -165,8 +136,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
     //accesses Google Fit data, prompts user for authentication and permissions
     //if there is no current login
     //Adds the latest google fit walk as a new exercise if it has not been added already
@@ -182,25 +151,19 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         long endTime = System.currentTimeMillis();
-        //long startTime = endTime - 86400000;
         long startTime = endTime - 864000000;
 
         System.out.println("times for google fit:");
         System.out.println(startTime);
         System.out.println(endTime);
 
-
-
         GoogleSignInAccount account = GoogleSignIn
                 .getAccountForExtension(this, fitnessOptions);
-
-
 
         //get the user's name
         AccountManager am = AccountManager.get(this); // "this" references the current Context
 
         Account[] accounts = am.getAccounts();
-
 
         //displays emails? why?
         System.out.println("Display Name:");
@@ -208,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
         for (Account acc : accounts) {
             System.out.println(acc.toString());
         }
-
 
         if (!GoogleSignIn.hasPermissions(account, fitnessOptions)) {
             GoogleSignIn.requestPermissions(
@@ -220,16 +182,12 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("requested permissions");
         }
 
-
         DataReadRequest readRequest = new DataReadRequest.Builder()
                 .aggregate(DataType.AGGREGATE_MOVE_MINUTES, DataType.TYPE_MOVE_MINUTES)
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
                 .bucketByTime(1, TimeUnit.DAYS)
                 //.bucketBySession()
                 .build();
-
-
-
 
         Task<DataReadResponse> response = Fitness.getHistoryClient(this, account)
                 .readData(readRequest)
@@ -246,7 +204,6 @@ public class MainActivity extends AppCompatActivity {
                                 System.out.println(bucket.getDataSet(DataType.AGGREGATE_MOVE_MINUTES).getDataPoints().get(0).getValue(Field.FIELD_DURATION));
                                 walked_min = bucket.getDataSet(DataType.AGGREGATE_MOVE_MINUTES).getDataPoints().get(0).getValue(Field.FIELD_DURATION).asInt();
                                 break;
-                                //System.out.println(bucket.getDataSet(DataType.TYPE_MOVE_MINUTES).getDataPoints().get(0).getValue(Field));
                             }
                         }
                         //try to add fit workout, wont add if walked_min is 0 or workout already was added
@@ -262,7 +219,6 @@ public class MainActivity extends AppCompatActivity {
                         System.out.println(e);
                     }
                 });
-
 
     }
 
@@ -377,6 +333,5 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
 
 }

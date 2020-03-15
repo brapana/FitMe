@@ -30,10 +30,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class FoodDiaryFragment extends Fragment {
     private ImageView btnAddFoodItem;
 
@@ -120,7 +116,6 @@ public class FoodDiaryFragment extends Fragment {
         loadData(view, savedInstanceState);
     }
 
-
     //sets arraylists of String arraylists with the following structure: [timestamp, food_name, calories]
     //each outer arraylist responsible for a particular type of food (meal_time)
     // each arraylist sorted by timestamp descending
@@ -160,7 +155,6 @@ public class FoodDiaryFragment extends Fragment {
 
                             Collections.sort(keys_as_dates, Collections.reverseOrder());
 
-
                             //arraylists of String arraylists with the following structure: [timestamp, food_name, calories]
                             //each outer arraylist responsible for a particular type of food (meal_time)
                             // each arraylist will be sorted by timestamp descending
@@ -168,7 +162,6 @@ public class FoodDiaryFragment extends Fragment {
                             bList = new ArrayList<ArrayList<String>>();
                             lList = new ArrayList<ArrayList<String>>();
                             dList = new ArrayList<ArrayList<String>>();
-
 
                             //loop over now sorted date keys and place the objects into the correct arraylist
                             for (Date key : keys_as_dates){
@@ -201,7 +194,6 @@ public class FoodDiaryFragment extends Fragment {
                                         dList.add(food_item);
                                         break;
                                 }
-
                             }
 
                             adapterB.addAll(bList);
@@ -243,7 +235,6 @@ public class FoodDiaryFragment extends Fragment {
                         System.out.println(e);
                     }
                 });
-
 
     }
 
@@ -351,8 +342,6 @@ public class FoodDiaryFragment extends Fragment {
 
                             ((TextView)view.findViewById(R.id.caloriesRemainingHome)).setText(String.format("%d cal", caloriesRemaining));
 
-
-
                         }
                     }
                 })
@@ -363,6 +352,5 @@ public class FoodDiaryFragment extends Fragment {
                     }
                 });
     }
-
 
 }

@@ -17,17 +17,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,7 +49,6 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -78,12 +73,10 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         if (!etName.getText().toString().equals("")){
-                            //TODO Brandon update name
                             String name = etName.getText().toString();
                             writeName(name);
                         }
                         if (!etHeight.getText().toString().equals("")){
-                            //TODO Brandon update height
                             String height = etHeight.getText().toString();
                             writeHeight(Integer.parseInt(height));
                             _height = Integer.parseInt(height);
@@ -91,7 +84,6 @@ public class ProfileFragment extends Fragment {
                             writeCalGoal((int)(BMR*1.2));
                         }
                         if (!etWeight.getText().toString().equals("")){
-                            //TODO Brandon update weight
                             String weight = etWeight.getText().toString();
                             writeWeight(Integer.parseInt(weight));
                             _weight = Integer.parseInt(weight);
@@ -99,7 +91,6 @@ public class ProfileFragment extends Fragment {
                             writeCalGoal((int)(BMR*1.2));
                         }
                         if (!etAge.getText().toString().equals("")){
-                            //TODO Brandon update age;
                             String age = etAge.getText().toString();
                             writeAge(Integer.parseInt(age));
                             _age = Integer.parseInt(age);
@@ -107,7 +98,6 @@ public class ProfileFragment extends Fragment {
                             writeCalGoal((int)(BMR*1.2));
                         }
                         if (!etGender.getText().toString().equals("")){
-                            //TODO Brandon update gender
                             String gender = etGender.getText().toString();
                             writeGender(gender);
                             _gender = gender;
@@ -116,6 +106,7 @@ public class ProfileFragment extends Fragment {
 
                         }
                         dialog.dismiss();
+                        ((MainActivity) getActivity()).changeFragmentFromFragment(ProfileFragment.class);
                     }
                 });
 

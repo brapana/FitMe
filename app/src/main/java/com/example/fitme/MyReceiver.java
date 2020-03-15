@@ -12,7 +12,6 @@ import androidx.core.app.NotificationManagerCompat;
 
 public class MyReceiver extends BroadcastReceiver {
 
-
     @Override
     public void onReceive(Context context, Intent intent) {
         System.out.println("Notification sent");
@@ -45,9 +44,6 @@ public class MyReceiver extends BroadcastReceiver {
         //notificationId is a unique int for each notification that you must define
         notificationManager.notify(0, builder.build());
 
-
-
     }
-
 
 }

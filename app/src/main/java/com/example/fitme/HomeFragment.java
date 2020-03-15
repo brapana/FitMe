@@ -19,58 +19,32 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptionsExtension;
-import com.google.android.gms.fitness.Fitness;
-import com.google.android.gms.fitness.FitnessOptions;
-import com.google.android.gms.fitness.data.DataSet;
-import com.google.android.gms.fitness.data.DataType;
-import com.google.android.gms.fitness.request.DataReadRequest;
-import com.google.android.gms.fitness.result.DataReadResponse;
-import com.google.android.gms.fitness.result.DataReadResult;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.SetOptions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class HomeFragment extends Fragment {
     private Button btnAddFood;
     private Button btnStartWorkout;
     private TextView etCalorieGoal;
     private TextView etTimeDuration;
-    private ImageView btnEditCalorieGoal;//opens popup dialog
+    private ImageView btnEditCalorieGoal;
     private Dialog dialog;
 
     private static long calories_remaining = 0;
     private static long calories_consumed = 0;
     private static long calories_burned = 0;
-
 
     public HomeFragment() {
         // Required empty public constructor
@@ -91,17 +65,6 @@ public class HomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         writeToDatabase();
-
-        //UNCOMMENTED THIS AFTER YOU HAVE RAN THE APP ONCE TO MAKE DATABASE OR ELSE
-        //YOU MIGHT GET null keyset() ERRORS AND HAVE TO DELETE YOUR DEVICE's UUID Firestore document
-        //dummy data for exercise_history
-//        String exercise_name = "running";
-//        int calories_burned = 100;
-//        int time_performed = 30;
-//
-//        writeExerciseToDatabase(exercise_name, calories_burned, time_performed);
-
-        //queryExercises();
 
     }
 
@@ -259,7 +222,6 @@ public class HomeFragment extends Fragment {
         fav_exercises.put("Bicycling, Stationary: vigorous", 13.03333333);
 
 
-
         user.put("fav_exercises", fav_exercises);
         user.put("exercise_history", exercise_history);
         user.put("food_history", food_history);
@@ -302,9 +264,6 @@ public class HomeFragment extends Fragment {
 
                     }
                 });
-
-
-
 
     }
 
@@ -423,12 +382,8 @@ public class HomeFragment extends Fragment {
                             ((TextView)view.findViewById(R.id.timeDuration)).setText(String.format("%d min", workout_min));
 
                             String next_notification = (String)data.get("next_notification");
-                            //System.out.println(next_notification);
+
                             ((TextView)view.findViewById(R.id.nextWorkoutTime)).setText(next_notification);
-
-
-
-
 
                         }
                     }
@@ -440,7 +395,6 @@ public class HomeFragment extends Fragment {
                     }
                 });
     }
-
 
 
     //write new calorie goal to the database
@@ -547,10 +501,5 @@ public class HomeFragment extends Fragment {
                     }
                 });
     }
-
-
-
-
-
 
 }

@@ -64,7 +64,6 @@ public class RecommendedWorkoutsAdapter extends RecyclerView.Adapter<Recommended
         notifyDataSetChanged();
     }
 
-
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         //grab all the food item fields
         private TextView etRecommendedName;
@@ -145,4 +144,3 @@ public class RecommendedWorkoutsAdapter extends RecyclerView.Adapter<Recommended
     }
 
 }
-

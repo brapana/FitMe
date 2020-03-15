@@ -12,20 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -54,7 +47,6 @@ public class ChooseWorkoutFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -79,9 +71,6 @@ public class ChooseWorkoutFragment extends Fragment {
         rvRecommendedWorkouts.setLayoutManager(layoutManagerB);
         rvRecommendedWorkouts.setAdapter(adapter);
 
-        //TODO Brandon: le recommended workouts recommendedList
-        //System.out.println((int)loadWorkoutMin());
-        //the below function calls calcWorkouts after its done
         loadWorkoutMin(view, savedInstanceState);
 
     }
@@ -129,8 +118,6 @@ public class ChooseWorkoutFragment extends Fragment {
         final String UUID = ((MainActivity)getActivity()).get_uuid(getContext());
         FirebaseFirestore db = ((MainActivity)getActivity()).getFS();
 
-
-
         db.collection("users").document(UUID).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -144,10 +131,6 @@ public class ChooseWorkoutFragment extends Fragment {
                             Map<String,Object> exercise_history = (Map<String,Object>)data.get("exercise_history");
 
                             Set<String> keys = fav_exercises.keySet();
-
-
-
-                            //long calories_rem = Integer.parseInt(((TextView)view.findViewById(R.id.caloriesRemainingHome)).getText().toString().split(" ")[0]);
 
                             long calories_rem = HomeFragment.getCalRem();
                             long calories_burn = HomeFragment.getCalBurned();
@@ -183,15 +166,9 @@ public class ChooseWorkoutFragment extends Fragment {
 
                                 delta = delta * (exercise_freq);
 
-
-
                                 workouts.put(delta, key);
 
-
-
                             }
-
-
 
                             Set<Double> workouts_keys = workouts.keySet();
 
@@ -232,7 +209,6 @@ public class ChooseWorkoutFragment extends Fragment {
                         System.out.println(e);
                     }
                 });
-
 
     }
 }

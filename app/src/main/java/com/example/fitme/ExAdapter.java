@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,7 +48,6 @@ public class ExAdapter extends RecyclerView.Adapter<ExAdapter.ViewHolder>{
         notifyDataSetChanged();
     }
 
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView etFavoritesName;
         private TextView etFavoritesCalBurnedPerMinute;
@@ -58,7 +56,6 @@ public class ExAdapter extends RecyclerView.Adapter<ExAdapter.ViewHolder>{
             //set all the fields
             etFavoritesName= itemView.findViewById(R.id.etFavoritesName);
             etFavoritesCalBurnedPerMinute = itemView.findViewById(R.id.etFavoritesCalsBurned);
-
         }
 
         public void bind(ArrayList<String> exerciseItem){
