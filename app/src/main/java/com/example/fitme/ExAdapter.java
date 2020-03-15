@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 import androidx.annotation.NonNull;
@@ -50,13 +51,20 @@ public class ExAdapter extends RecyclerView.Adapter<ExAdapter.ViewHolder>{
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        private TextView etFavoritesName;
+        private TextView etFavoritesCalBurnedPerMinute;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             //set all the fields
+            etFavoritesCalBurnedPerMinute = itemView.findViewById(R.id.etFavoritesName);
+            etFavoritesName = itemView.findViewById(R.id.etFavoritesCalsBurned);
+
         }
 
-        public void bind(ArrayList<String> foodItem){
+        public void bind(ArrayList<String> exerciseItem){
             //populate fields
+            etFavoritesName.setText(exerciseItem.get(1));
+            etFavoritesCalBurnedPerMinute.setText("Burn ~"+Integer.toString((int)Math.round(Double.parseDouble(exerciseItem.get(3)))) +" cals");
         }
     }
 }
