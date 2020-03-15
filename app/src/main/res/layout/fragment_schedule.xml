@@ -28,7 +28,7 @@
                 android:text="Daily Workout History"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
-                android:textSize="18sp" />
+                android:textSize="24sp" />
 
             <Button
                 android:id="@+id/addToCalendar"

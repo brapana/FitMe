@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ public class FavoritesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rvEx = getActivity().findViewById(R.id.rvEx);
+        aList = new ArrayList<ArrayList<String>>();
         LinearLayoutManager layoutManagerE = new LinearLayoutManager(getContext());
         rvEx.setLayoutManager(layoutManagerE);
         rvEx.setAdapter(adapterE);
@@ -105,16 +107,13 @@ public class FavoritesFragment extends Fragment {
 
                             }
 
-
-
-
-
                             System.out.println("Successfully loaded data to arraylist for favorite exercises");
                             System.out.println("fav exercises list:");
                             for (ArrayList<String> item : aList){
                                 System.out.println(item.get(0) + " " + item.get(1));
                             }
-
+                            adapterE.addAll(aList);
+                            adapterE.notifyDataSetChanged();
 
 
                         }
