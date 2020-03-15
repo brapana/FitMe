@@ -97,7 +97,7 @@ public class FavoritesFragment extends Fragment {
                                 ArrayList<String> exercise_item = new ArrayList<String>();
 
                                 exercise_item.add(key);
-                                exercise_item.add((String)fav_exercises.get(key));
+                                exercise_item.add(Double.toString((Double)fav_exercises.get(key)));
 
 
                                 aList.add(exercise_item);

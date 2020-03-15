@@ -72,7 +72,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
             //populate fields
             etWorkoutTimeStamp.setText(exerciseItem.get(0));
             etWorkoutName.setText(exerciseItem.get(1));
-            etWorkoutCaloriesBurned.setText(exerciseItem.get(2) +" cal/min");
+            etWorkoutCaloriesBurned.setText(exerciseItem.get(2) +" cal burned");
             etWorkoutDuration.setText(exerciseItem.get(3)+" min");
         }
     }
