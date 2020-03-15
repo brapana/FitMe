@@ -1,16 +1,27 @@
 package com.example.fitme;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.MenuItem;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -49,6 +60,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -71,6 +83,9 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +93,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         accessGoogleFit();
+
+
+        //set alarm to ring in x milliseconds
+        //startAlarmBroadcastReceiver(this, 10000);
 
         bottomNavigationMenu = findViewById(R.id.bottomNavigation);
 
@@ -311,5 +330,6 @@ public class MainActivity extends AppCompatActivity {
                 });
 
     }
+
 
 }

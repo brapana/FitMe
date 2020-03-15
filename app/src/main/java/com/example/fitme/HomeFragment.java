@@ -411,6 +411,10 @@ public class HomeFragment extends Fragment {
                             long workout_min = (long)data.get("workout_min");
                             ((TextView)view.findViewById(R.id.timeDuration)).setText(String.format("%d min", workout_min));
 
+                            String next_notification = (String)data.get("next_notification");
+                            //System.out.println(next_notification);
+                            ((TextView)view.findViewById(R.id.nextWorkoutTime)).setText(next_notification);
+
 
 
 

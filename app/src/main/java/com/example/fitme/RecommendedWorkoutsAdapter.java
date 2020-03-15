@@ -11,7 +11,17 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RecommendedWorkoutsAdapter extends RecyclerView.Adapter<RecommendedWorkoutsAdapter.ViewHolder> {
     Context context;
@@ -84,8 +94,54 @@ public class RecommendedWorkoutsAdapter extends RecyclerView.Adapter<Recommended
                 //TODO Brandon: add recommended workout to workout history (chosen workout: an item from the recommended list they clicked on)
                 Toast.makeText(context, "You selected a workout! See your schedule to view your workout.", Toast.LENGTH_SHORT).show();
                 ((MainActivity) v.getContext()).changeFragmentFromFragment(HomeFragment.class);
+
+                writeExerciseToDatabase(chosenWorkout.get(1), (int)Double.parseDouble(chosenWorkout.get(3)), Integer.parseInt(chosenWorkout.get(2)));
             }
         }
+    }
+
+    //write performed exercise to database
+    //calories_burned = cal burned per min, time_performed = time in min
+    //eventually this should go in chooseworkoutfragment
+    public void writeExerciseToDatabase(String exercise_name, int calories_burned, int time_performed) {
+        Map<String, Object> user = new HashMap<>();
+        Map<String, Object> exercise_history = new HashMap<>();
+        Map<String, Object> exercise_info = new HashMap<>();
+
+
+        String UUID = MainActivity.get_uuid(context);
+
+        System.out.println("UUID is: " + UUID);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+        Date time = Timestamp.now().toDate();
+
+        exercise_info.put("exercise", exercise_name);
+        exercise_info.put("calories_burned", calories_burned);
+        exercise_info.put("time_performed", time_performed);
+
+        exercise_history.put(date_format.format(time), exercise_info);
+
+        user.put("exercise_history", exercise_history);
+
+        //set (overwrite) document with key of the current device's UUID
+        db.collection("users").document(UUID)
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("Successfully wrote exercise data to database!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println(e);
+                    }
+                });
     }
 
 }
