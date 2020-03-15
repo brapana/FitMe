@@ -150,6 +150,11 @@ public class ChooseWorkoutFragment extends Fragment {
                             //long calories_rem = Integer.parseInt(((TextView)view.findViewById(R.id.caloriesRemainingHome)).getText().toString().split(" ")[0]);
 
                             long calories_rem = HomeFragment.getCalRem();
+                            long calories_burn = HomeFragment.getCalBurned();
+                            long calories_consumed = HomeFragment.getCalConsumed();
+
+                            System.out.println("calories remaining (workout frag)");
+                            System.out.println(calories_rem);
 
                             //find the exercise that most closely reaches the remaining calories for
                             //the given amount of minutes
@@ -174,7 +179,7 @@ public class ChooseWorkoutFragment extends Fragment {
 
                                 double calories_burned = (double)fav_exercises.get(key);
 
-                                double delta = Math.abs(calories_rem-(calories_burned*minutes));
+                                double delta = Math.abs((calories_consumed-calories_burn)-(calories_burned*minutes));
 
                                 delta = delta * (exercise_freq);
 

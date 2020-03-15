@@ -68,6 +68,8 @@ public class HomeFragment extends Fragment {
     private Dialog dialog;
 
     private static long calories_remaining = 0;
+    private static long calories_consumed = 0;
+    private static long calories_burned = 0;
 
 
     public HomeFragment() {
@@ -76,6 +78,12 @@ public class HomeFragment extends Fragment {
 
     public static long getCalRem(){
         return calories_remaining;
+    }
+    public static long getCalConsumed(){
+        return calories_consumed;
+    }
+    public static long getCalBurned(){
+        return calories_burned;
     }
 
     @Override
@@ -407,6 +415,9 @@ public class HomeFragment extends Fragment {
                             ((TextView)view.findViewById(R.id.caloriesRemainingHome)).setText(String.format("%d cal", caloriesRemaining));
 
                             calories_remaining = caloriesRemaining;
+
+                            calories_consumed = totalCal;
+                            calories_burned = totalCalBurned;
 
                             long workout_min = (long)data.get("workout_min");
                             ((TextView)view.findViewById(R.id.timeDuration)).setText(String.format("%d min", workout_min));
