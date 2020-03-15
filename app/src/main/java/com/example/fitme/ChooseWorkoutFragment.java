@@ -216,8 +216,7 @@ public class ChooseWorkoutFragment extends Fragment {
                             for (ArrayList<String> item : recommendedList){
                                 System.out.println(item.get(0) + " " + item.get(1) + " " + item.get(2) + " " + item.get(3));
                             }
-
-
+                            adapter.addAll(recommendedList);
 
                         }
                     }

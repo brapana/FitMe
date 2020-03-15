@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,7 +57,7 @@ public class RecommendedWorkoutsAdapter extends RecyclerView.Adapter<Recommended
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         //grab all the food item fields
-        private EditText etRecommendedName;
+        private TextView etRecommendedName;
         private TextView etCaloriesBurnedPerMinute;
         private CardView cvRecommended;
         private ArrayList<String> chosenWorkout;
@@ -75,17 +74,15 @@ public class RecommendedWorkoutsAdapter extends RecyclerView.Adapter<Recommended
         public void bind(ArrayList<String> recommendedItem){
             //populate fields
             etRecommendedName.setText(recommendedItem.get(1));
-            etCaloriesBurnedPerMinute.setText(recommendedItem.get(2));
+            etCaloriesBurnedPerMinute.setText("Burn ~"+Integer.toString((int)Math.round(Double.parseDouble(recommendedItem.get(3)))) +" cals");
             chosenWorkout = recommendedItem;
         }
 
         @Override
         public void onClick(View v) {
             if (v.getId() == cvRecommended.getId()){
-                //TODO Brandon: add recommended workout to workout history
-                //chosenWorkout is the workout array they chose, has the same info as each item in the recommended workouts list passed to the adapter
+                //TODO Brandon: add recommended workout to workout history (chosen workout: an item from the recommended list they clicked on)
                 Toast.makeText(context, "You selected a workout! See your schedule to view your workout.", Toast.LENGTH_SHORT).show();
-
                 ((MainActivity) v.getContext()).changeFragmentFromFragment(HomeFragment.class);
             }
         }
