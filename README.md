@@ -2,6 +2,8 @@
 Android application utilizing Google's Firestore Cloud Database to track users' calorie intake and expenditure in order to intelligently suggest workouts via push notifications.
 
 Primary API and Database connectivity (Back-end): https://github.com/brapana
+
+
 Primary UI Design (Front-end): https://github.com/MarissaSalcido
 
 Short video of FitMe in action: https://www.youtube.com/watch?v=UXIBZtQbpOw 
