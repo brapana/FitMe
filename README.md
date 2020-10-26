@@ -13,7 +13,7 @@ Short video of FitMe in action: https://www.youtube.com/watch?v=UXIBZtQbpOw
 2. Google Fit (https://developers.google.com/fit) for calculating the number of steps taken and number of minutes spent moving in order to automatically create an exercise item in the user’s history that reflects this data.
 3. Google Authentication Services (https://cloud.google.com/docs/authentication/) in order to allow users to log in to their Google account and give the appropriate permissions to access Google Fit services.
 
-## Software Used: 
+## Software Used 
 1. Android Studio to design and program the application.
 2. Google’s Firebase NoSQL cloud database in order to handle data interaction (user calorie goals, food history, preferred exercises, etc.).
 
